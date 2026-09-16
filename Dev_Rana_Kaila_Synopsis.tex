@@ -1,0 +1,546 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper,left=1.5in,right=1.0in,top=1.0in,bottom=1.0in]{geometry}
+\usepackage{times}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{caption}
+
+\setstretch{1.4}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\small\color{gray}Dual-Stream Deepfake Video Detection | Synopsis}
+\fancyfoot[C]{\thepage}
+\fancyfoot[L]{\small\color{gray}LIET, Greater Noida --- Dept. of CSE (AIML)}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=blue,
+    urlcolor=blue
+}
+
+\begin{document}
+
+% ==================== COVER PAGE ====================
+\begin{titlepage}
+    \centering
+    {\LARGE \textbf{LLOYD INSTITUTE OF ENGINEERING \& TECHNOLOGY}\par}
+    \vspace{0.2cm}
+    {\small (Affiliated to Dr. A.P.J. Abdul Kalam Technical University \& Approved by AICTE, New Delhi)\par}
+    {\small Plot No. 3, Knowledge Park II, Greater Noida, Uttar Pradesh -- 201306\par}
+    \vspace{0.4cm}
+    {\large \textbf{DEPARTMENT OF COMPUTER SCIENCE \& ENGINEERING \& ALLIED BRANCHES}\par}
+    {\textbf{ARTIFICIAL INTELLIGENCE \& MACHINE LEARNING}\par}
+    \vspace{0.4cm}
+    \rule{\textwidth}{1pt}
+    \vspace{0.5cm}
+    {\huge \textbf{SYNOPSIS}\par}
+    \vspace{0.2cm}
+    {\Large \textbf{MINI PROJECT / MAJOR PROJECT--I}\par}
+    {\large \textbf{(B.TECH SEMESTER VII)}\par}
+    \vspace{1.0cm}
+
+    \fbox{
+        \parbox{0.92\textwidth}{
+            \centering \vspace{0.4cm}
+            {\Large \textbf{Dual-Stream Spatial and Frequency-Domain Deepfake Video Detection using EfficientNet and Discrete Cosine Transform (DCT)}\par}
+            \vspace{0.4cm}
+        }
+    }
+    
+    \vspace{1.5cm}
+    {\textit{Submitted By}\par}
+    \vspace{0.2cm}
+    {\Large \textbf{DEV RANA KAILA}\par}
+    {\textbf{University Roll / Enrollment No.: 2301531530023}\par}
+    {Branch: Computer Science \& Engineering (AIML)\par}
+    {Semester: VII (Final Year)\par}
+    \vspace{1.0cm}
+
+    {\textit{Under the Supervision of}\par}
+    \vspace{0.2cm}
+    {\Large \textbf{Dr. Devendra Gautam}\par}
+    {\textbf{Associate Professor \& Mini Project / Internship Coordinator}\par}
+    {Department of Computer Science \& Engineering\par}
+    \vfill
+
+    {\large \textbf{Academic Session 2026--2027}\par}
+    \vspace{0.2cm}
+    {\small \textit{Submitted in partial fulfillment of the requirements for the degree of Bachelor of Technology in Computer Science \& Engineering (AIML)}\par}
+\end{titlepage}
+
+\pagenumbering{roman}
+
+% ==================== CERTIFICATE ====================
+\chapter*{Certificate}
+\addcontentsline{toc}{chapter}{Certificate}
+\thispagestyle{plain}
+
+This is to certify that the project synopsis entitled \textbf{“Dual-Stream Spatial and Frequency-Domain Deepfake Video Detection using EfficientNet and Discrete Cosine Transform (DCT)”} is a bonafide proposal submitted by \textbf{Dev Rana Kaila}, University Roll / Enrollment No. \textbf{2301531530023}, student of Bachelor of Technology in Computer Science \& Engineering (Artificial Intelligence \& Machine Learning), 7th Semester, at Lloyd Institute of Engineering \& Technology, Greater Noida, for the academic session 2026--2027.
+
+\vspace{0.5cm}
+The proposed research work investigates deep learning methodologies for facial manipulation forensics, utilizing a dual-branch spatial convolutional network and frequency-domain artifact extraction via 2D Discrete Cosine Transform (DCT) to distinguish authentic video frames from synthetic and face-swapped deepfakes. The synopsis fulfills the requirements prescribed under the AKTU B.Tech Project Evaluation Guidelines.
+
+\vspace{5.0cm}
+\noindent
+\begin{minipage}[t]{0.5\textwidth}
+    \textbf{Dr. Devendra Gautam}\\
+    Project Guide \& Coordinator\\
+    Associate Professor, Dept. of CSE\\
+    Lloyd Institute of Engg. \& Tech.
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.45\textwidth}
+    \raggedleft
+    \textbf{Head of Department}\\
+    Dept. of CSE \& Allied Branches\\
+    Lloyd Institute of Engg. \& Tech.
+\end{minipage}
+
+\vspace{2.0cm}
+\noindent
+Date: \rule{4cm}{0.4pt} \hfill Department Seal / Stamp\\
+Place: Greater Noida
+
+\newpage
+
+% ==================== DECLARATION ====================
+\chapter*{Declaration}
+\addcontentsline{toc}{chapter}{Declaration}
+\thispagestyle{plain}
+
+I, \textbf{Dev Rana Kaila}, University Roll / Enrollment No. \textbf{2301531530023}, student of Bachelor of Technology in Computer Science \& Engineering (Artificial Intelligence \& Machine Learning), 7th Semester, hereby declare that this project synopsis entitled \textbf{“Dual-Stream Spatial and Frequency-Domain Deepfake Video Detection using EfficientNet and Discrete Cosine Transform (DCT)”} has been prepared by me for academic project evaluation at Lloyd Institute of Engineering \& Technology, Greater Noida.
+
+\vspace{0.5cm}
+I affirm that the work described in this synopsis represents my original proposal and thorough review of existing literature. The proposed methodology, architectural formulations, experimental setup, and anticipated outcomes have been designed in accordance with AKTU guidelines and academic integrity standards. Any literature, datasets, or software tools referenced have been properly credited and cited.
+
+\vspace{4.0cm}
+\noindent
+Signature: \rule{6cm}{0.4pt}\\[0.4cm]
+\textbf{Student Name: Dev Rana Kaila}\\
+Enrollment / Roll No.: 2301531530023\\
+Branch: B.Tech CSE (AIML), Semester VII\\
+Date: \rule{4cm}{0.4pt}\\
+Place: Greater Noida
+
+\newpage
+
+% ==================== ABSTRACT ====================
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+\thispagestyle{plain}
+
+The rapid emergence of deep generative modeling, including Generative Adversarial Networks (GANs) and Diffusion Models, has made the synthesis of hyper-realistic facial media (deepfakes) ubiquitous. While offering novel utilities in creative entertainment, deepfakes present grave threats to biometric identity systems, automated financial KYC pipelines, executive communications, and democratic integrity. Conventional detection models rely predominantly on RGB spatial convolutional neural networks, which attempt to localize visible visual flaws like warping or boundary blending. However, spatial detectors suffer devastating accuracy degradation when subjected to real-world social media video compression (e.g., H.264/H.265 codecs) and downsampling.
+
+\vspace{0.3cm}
+To overcome this bottleneck, this project proposes a novel Dual-Stream Spatial and Frequency-Domain Deepfake Video Detection Framework. The architecture bifurcates each extracted facial frame into two complementary processing branches: (1) a Spatial Stream utilizing a pre-trained EfficientNet-B4 backbone with Squeeze-and-Excitation attention to extract high-level semantic texture anomalies, and (2) a Frequency Stream employing 2D Discrete Cosine Transform (DCT) combined with radial azimuthal spectral pooling to detect periodic high-frequency grid artifacts left behind by generative upsampling layers. The spatial and spectral feature vectors are dynamically integrated via an attention-gated bilinear fusion mechanism to predict frame-level and temporal video authenticity.
+
+\vspace{0.3cm}
+The system will be evaluated across standard benchmark datasets: FaceForensics++ (c23 and c40 compression tiers) and Celeb-DF v2. Performance will be assessed using AUC-ROC, F1-Score, Detection Accuracy, and Equal Error Rate (EER). Furthermore, an interactive forensic dashboard built with FastAPI and Streamlit is developed to provide examiners with real-time video inference, probability gauges, and Grad-CAM spatial-spectral explainability heatmaps.
+
+\vspace{0.5cm}
+\noindent
+\textbf{Keywords:} Deepfake Detection, Computer Vision, EfficientNet-B4, 2D Discrete Cosine Transform (DCT), Frequency Analysis, Spatial-Frequency Fusion, FaceForensics++, Explainable AI.
+
+\newpage
+
+% ==================== TABLE OF CONTENTS ====================
+\tableofcontents
+\newpage
+
+\pagenumbering{arabic}
+
+% ==================== CHAPTER 1 ====================
+\chapter{Introduction}
+
+\section{Background \& Societal Context}
+Recent breakthroughs in deep generative modeling, specifically Generative Adversarial Networks (GANs), Variational Autoencoders (VAEs), and Latent Diffusion Models (LDMs), have dramatically lowered the barrier to synthesizing and altering realistic human media. Deepfake generation algorithms---popularized by tools such as DeepFaceLab, FaceSwap, SimSwap, and modern text-to-video diffusion frameworks---can alter facial expressions, replace identities, and synchronize lip movements with fabricated speech in high definition. While these capabilities offer creative utilities in film production, digital avatars, and computer graphics, their unauthorized weaponization represents one of the most acute threats to societal trust and cybersecurity.
+
+The proliferation of hyper-realistic manipulated video content has directly catalyzed high-stakes security incidents, including executive identity impersonation in corporate wire fraud, automated KYC (Know Your Customer) bypass attacks in digital banking, political disinformation campaigns during elections, and reputational defamation. As synthetic media engines advance, distinguishability by human visual inspection has plummeted to near-random chance, creating an urgent demand for automated, mathematically grounded, and robust forensic systems capable of authenticating digital video streams.
+
+\section{Project Overview}
+This project proposes an end-to-end, dual-stream deep learning forensic system designed to detect facial manipulation in digital video sequences. Recognizing that conventional single-stream convolutional networks overfit to spatial domain artifacts (which are easily wiped out by lossy video codecs like H.264 or MPEG-4), our system investigates the complementary synergy between the spatial pixel domain and the frequency spectral domain.
+
+The architecture decouples each face image into two distinct processing pathways: (1) a Spatial Stream powered by an EfficientNet-B4 backbone that captures subtle edge discontinuities, blending boundaries, and textural incongruities, and (2) a Frequency Stream driven by 2D Discrete Cosine Transform (DCT) and azimuthal spectral profiling that detects high-frequency grid patterns left behind by the transposed convolutions and bilinear upsampling operations utilized in generative decoders. A multi-modal feature fusion network unifies these embeddings to yield a calibrated real-versus-fake probability score alongside visual interpretability maps.
+
+\section{Motivation \& Research Justification}
+Current deepfake detection systems exhibit significant vulnerabilities when tested outside controlled laboratory conditions. Standard spatial CNN detectors (such as standard ResNet or VGG models) achieve over 98\% accuracy when tested on uncompressed raw frames, but their accuracy drops precipitously to below 65\% when exposed to social media compression (e.g., YouTube or WhatsApp video compression). This dramatic degradation occurs because spatial compression algorithms discard subtle pixel gradients.
+
+However, signal processing theory dictates that synthetic image generation introduces systematic spectral artifacts in the frequency domain. Specifically, upsampling modules in GAN generators induce periodic repetitions in the frequency spectrum (spectral peaks) that persist even after heavy compression. By integrating 2D-DCT frequency analysis alongside spatial convolutions, the proposed project establishes a resilient defense mechanism capable of generalizing across diverse manipulation techniques and real-world transmission channels.
+
+\newpage
+
+% ==================== CHAPTER 2 ====================
+\chapter{Problem Statement and Objectives}
+
+\section{Problem Statement}
+Digital video forensics currently lacks robust, real-time mechanisms to distinguish authentic human recordings from hyper-realistic deepfake manipulations under practical video compression regimes. Conventional spatial-domain classifiers suffer from catastrophic performance decay when videos undergo lossy encoding, while existing frequency-domain models fail to leverage spatial semantic context. Furthermore, most existing detection architectures function as opaque black boxes devoid of forensic explainability, making them inadequate for high-assurance legal and regulatory verification. The problem addressed in this project is to develop a dual-stream spatial and frequency-domain deepfake detection pipeline that leverages EfficientNet-B4 feature extraction and 2D Discrete Cosine Transform (DCT) spectral decomposition to achieve high classification accuracy, robust cross-compression resilience, and transparent forensic interpretability.
+
+\section{Objectives}
+The primary objectives of this project are formulated as follows:
+\begin{enumerate}
+    \item \textbf{Automated Facial Preprocessing:} To implement automated facial detection, landmark alignment, and crop extraction from continuous video streams using MTCNN and MediaPipe Face Mesh.
+    \item \textbf{Spectral Artifact Transformation:} To mathematically formulate and implement a 2D Discrete Cosine Transform (DCT) module with azimuthal radial averaging to expose GAN upsampling fingerprints.
+    \item \textbf{Dual-Branch Neural Architecture:} To engineer a unified deep learning model coupling an EfficientNet-B4 spatial backbone with a 4-stage Spectral-CNN via an attention-gated bilinear fusion mechanism.
+    \item \textbf{Rigorous Empirical Benchmarking:} To evaluate model resilience against standard public benchmarks (FaceForensics++ c23/c40 and Celeb-DF v2) using AUC-ROC, F1-Score, Detection Accuracy, and EER.
+    \item \textbf{Explainable Forensic Web System:} To develop and deploy an interactive inspection portal using FastAPI and Streamlit featuring frame-by-frame inference, probability meters, and Grad-CAM spatial-spectral visual explanations.
+\end{enumerate}
+
+\section{Scope and Boundary of the Project}
+The scope of this project encompasses frame-level and temporal video-level facial manipulation detection across standard manipulation categories: Deepfakes (autoencoder face swap), Face2Face (facial reenactment), FaceSwap (graphics-based swap), and NeuralTextures (neural rendering). The project focuses on facial crops extracted from input videos. Audio stream forensics, full-body synthesis, and text metadata forensics remain outside the primary boundary of this work, allowing dedicated focus on visual and spectral artifact modeling.
+
+\newpage
+
+% ==================== CHAPTER 3 ====================
+\chapter{Literature Background \& Comparative Analysis}
+
+\section{Overview of Deepfake Generation Mechanisms}
+Modern face synthesis pipelines generally rely on encoder-decoder architectures with shared latent spaces or conditional generative adversarial frameworks. In autoencoder-based tools (such as DeepFaceLab), an encoder extracts identity-independent attributes while two distinct decoders reconstruct the source and target faces. In GAN-based systems, a generator network employs transposed convolutional layers or nearest-neighbor upsampling followed by convolutions to synthesize high-resolution target pixels from latent vectors. Crucially, these upsampling operators introduce periodic checkerboard patterns and spectral anomalies in the Fourier and DCT domains, creating mathematical fingerprints that do not occur in natural optical camera capture systems.
+
+\section{Related Detection Architectures}
+Early deepfake detection models, such as MesoNet-4, introduced compact convolutional networks focused on mesoscopic properties of images. While computationally lightweight, MesoNet exhibits limited representational capacity and fails against modern high-resolution deepfakes. Subsequently, XceptionNet became the standard benchmark model within the FaceForensics++ benchmark, demonstrating that depthwise separable convolutions effectively capture spatial discrepancies. However, XceptionNet requires significant computational resources and exhibits poor cross-dataset generalization when evaluated on unseen generation techniques like Celeb-DF.
+
+Recent investigations by Frank et al. and Durall et al. demonstrated that GAN-generated images share common spectral discrepancies observable via Fourier and Cosine transforms. Despite these findings, existing pure-frequency detectors frequently discard semantic spatial details such as unnatural eye reflections and boundary blending. This literature gap strongly establishes the necessity for an integrated, dual-domain architecture.
+
+\section{Positioning of the Present Work}
+Table~\ref{tab:lit_comp} synthesizes the positioning of our proposed work against leading forensic baselines.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Comparative Analysis of State-of-the-Art Deepfake Detection Methods}
+\label{tab:lit_comp}
+\begin{tabular}{p{3.2cm} p{2.4cm} p{4.0cm} p{4.2cm}}
+\toprule
+\textbf{Model / Approach} & \textbf{Primary Domain} & \textbf{Key Strengths} & \textbf{Identified Limitations} \\
+\midrule
+MesoNet-4 (Afchar et al.) & Spatial (RGB) & Lightweight, fast CPU inference & Low capacity, fails on modern high-res deepfakes \\
+\addlinespace
+XceptionNet (Rossler et al.) & Spatial (RGB) & Strong benchmark on raw uncompressed frames & Vulnerable to compression, heavy parameter size (22M+) \\
+\addlinespace
+F3-Net (Qian et al.) & Frequency (DCT) & Resilient against high video compression & Discards facial spatial landmarks and semantic context \\
+\addlinespace
+\textbf{Proposed Dual-Stream} & \textbf{Spatial + 2D-DCT} & \textbf{Captures both texture anomalies \& spectral fingerprints; robust to compression} & \textbf{Requires synchronized dual-branch feature fusion} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\newpage
+
+% ==================== CHAPTER 4 ====================
+\chapter{Proposed Methodology \& System Pipeline}
+
+\section{Overall Architectural Workflow}
+The proposed deepfake detection workflow is organized into six stages:
+\begin{enumerate}
+    \item \textbf{Video Ingestion \& Sampling:} Demuxing container video formats (MP4, AVI) at uniform sampling intervals (5 frames per second).
+    \item \textbf{Facial Tracking \& Extraction:} MTCNN cascade face detection isolates facial regions with 15\% contextual boundary margins to capture blending artifacts.
+    \item \textbf{Dual-Branch Transformation:} Canonical $256 \times 256$ facial crops are routed into the parallel Spatial Branch and Frequency Decomposition Branch.
+    \item \textbf{Deep Feature Representation:} Spatial feature extraction via EfficientNet-B4 (1792-d) and spectral feature extraction via Spectral-CNN (512-d).
+    \item \textbf{Attention-Gated Fusion:} Dynamic cross-domain attention weights inter-domain features to isolate the most discriminative manipulation clues.
+    \item \textbf{Binary Inference \& XAI Visualization:} Fully connected classifier outputs authenticity probability; Grad-CAM generates spatial-frequency heatmaps.
+\end{enumerate}
+
+\section{End-to-End System Pipeline}
+The system architecture decouples the normalized facial crop into parallel streams:
+\begin{itemize}
+    \item \textbf{Spatial Stream:} Analyzes local pixel inconsistencies and boundary artifacts via EfficientNet-B4.
+    \item \textbf{Spectral Stream:} Decomposes the grayscale face image into frequency components via 2D-DCT.
+    \item \textbf{Fusion Layer:} Merges spatial and spectral vectors via an attention-gated bilinear pooling mechanism.
+\end{itemize}
+
+\section{Dataset Selection \& Benchmark Repositories}
+To ensure academic validity, the project utilizes two widely recognized public forensic repositories:
+\begin{itemize}
+    \item \textbf{FaceForensics++ (FF++):} Contains 1,000 pristine YouTube sequences and 4,000 manipulated videos generated via Deepfakes, Face2Face, FaceSwap, and NeuralTextures. Evaluated across raw, c23, and c40 compression tiers.
+    \item \textbf{Celeb-DF (v2):} A challenging dataset of 590 real celebrity videos and 5,639 high-quality deepfakes generated using advanced synthesis tools.
+\end{itemize}
+
+\section{Preprocessing, Face Alignment \& Data Augmentation}
+Detected faces are cropped and resized to a canonical spatial resolution of $256 \times 256$ pixels. Data augmentation includes Random Horizontal Flipping ($p=0.5$), JPEG Compression Simulation ($Q \in [40, 90]$), Gaussian Blur ($\sigma \in [0.1, 2.0]$), and Random Color Jittering ($\pm 15\%$).
+
+\newpage
+
+% ==================== CHAPTER 5 ====================
+\chapter{Model Design \& Mathematical Formulation}
+
+\section{Dual-Stream Spatial-Frequency Architecture}
+The fundamental innovation of our architecture lies in processing spatial luminance-chrominance information concurrently with orthogonal frequency-domain projections. The two streams process heterogeneous representations before fusing at deep semantic levels.
+
+\section{Stream I: Spatial Feature Extraction (EfficientNet-B4)}
+The spatial stream accepts normalized RGB input tensors $\mathbf{x}_{spatial} \in \mathbb{R}^{3 \times 256 \times 256}$. We deploy EfficientNet-B4 as the backbone, which leverages compound scaling across network depth ($d=1.8$), width ($w=1.4$), and resolution ($r=1.0$). EfficientNet uses Mobile Inverted Bottleneck Convolutions (MBConv) integrated with Squeeze-and-Excitation (SE) attention blocks. The spatial stream extracts a rich 1792-dimensional feature representation vector $\mathbf{v}_{spatial}$.
+
+\section{Stream II: Frequency-Domain Artifact Extraction (2D-DCT)}
+Each grayscale converted face image $f(x, y)$ of size $N \times N$ (where $N=256$) is transformed into the frequency domain using the orthogonal 2D Discrete Cosine Transform (DCT-II):
+\begin{equation}
+F(u, v) = \alpha(u) \alpha(v) \sum_{x=0}^{N-1} \sum_{y=0}^{N-1} f(x, y) \cos\left[ \frac{\pi (2x + 1)u}{2N} \right] \cos\left[ \frac{\pi (2y + 1)v}{2N} \right]
+\end{equation}
+where the orthonormal basis scaling factors $\alpha(\cdot)$ are defined as:
+\begin{equation}
+\alpha(0) = \sqrt{\frac{1}{N}}, \quad \alpha(k) = \sqrt{\frac{2}{N}} \quad \text{for } k \ge 1.
+\end{equation}
+The Azimuthal (Radial) Average Spectrum is computed as:
+\begin{equation}
+A(r) = \frac{1}{|S_r|} \sum_{(u,v) \in S_r} |F(u, v)|, \quad \text{where } r = \sqrt{u^2 + v^2}.
+\end{equation}
+
+\section{Feature Fusion Mechanism \& Classification Head}
+To model inter-domain interactions, the spatial and frequency embeddings are combined using an attention-guided gating fusion:
+\begin{equation}
+\mathbf{g} = \sigma\left( \mathbf{W}_g [\mathbf{v}_{spatial} \parallel \mathbf{v}_{freq}] + \mathbf{b}_g \right)
+\end{equation}
+\begin{equation}
+\mathbf{v}_{fused} = \left[ \mathbf{g} \odot \mathbf{v}_{spatial} \;\parallel\; (1 - \mathbf{g}) \odot (\mathbf{W}_{proj} \mathbf{v}_{freq}) \right]
+\end{equation}
+The fused vector is passed through a multilayer perceptron with Dropout ($p=0.4$) and a final Sigmoid activation to produce the authenticity score $\hat{y} \in [0, 1]$.
+
+\section{Architectural Hyperparameter Configuration}
+Table~\ref{tab:model_config} details the structural configuration of the model.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Configuration of the Proposed Dual-Stream Architecture}
+\label{tab:model_config}
+\begin{tabular}{p{4.5cm} p{5.0cm} p{4.5cm}}
+\toprule
+\textbf{Subsystem / Component} & \textbf{Architectural Specification} & \textbf{Output Dimensions / Parameters} \\
+\midrule
+Face Alignment \& Detection & MTCNN / MediaPipe Face Mesh & $256 \times 256 \times 3$ (RGB Crop) \\
+Spatial Stream Backbone & EfficientNet-B4 (Pretrained) & 1792-d feature vector (19.3M) \\
+Frequency Decomposition & 2D Orthogonal DCT-II + Log Scaling & $256 \times 256$ Spectral Map \\
+Frequency Stream Network & 4-Stage Custom Spectral-CNN & 512-d feature vector (1.8M) \\
+Inter-Domain Fusion & Attention-Gated Bilinear Combination & 1024-d Fused Vector \\
+Classification Head & FC(1024$\to$256) $\to$ Dropout(0.4) $\to$ FC(256$\to$1) & Binary Logit / Sigmoid Score \\
+\midrule
+\textbf{Total Trainable Parameters} & \textbf{Spatial + Frequency + Fusion Heads} & \textbf{$\approx$ 21.4 Million Weights} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\newpage
+
+% ==================== CHAPTER 6 ====================
+\chapter{Training and Evaluation Framework}
+
+\section{Training Configuration \& Hyperparameters}
+The training hyperparameter configuration is summarized in Table~\ref{tab:train_config}.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Training and Optimization Hyperparameters}
+\label{tab:train_config}
+\begin{tabular}{p{6.5cm} p{7.5cm}}
+\toprule
+\textbf{Hyperparameter / Setting} & \textbf{Experimental Value} \\
+\midrule
+Base Optimizer & AdamW (Decoupled Weight Decay) \\
+Initial Learning Rate & $1.0 \times 10^{-4}$ \\
+Weight Decay Coefficient & $1.0 \times 10^{-4}$ \\
+Learning Rate Schedule & Cosine Annealing with Warm Restarts ($T_0=10, \eta_{min}=10^{-6}$) \\
+Batch Size & 16 video frames per mini-batch \\
+Training Epochs & 40 Epochs (Early Stopping patience = 6) \\
+Dataset Split Ratio & 70\% Training $\mid$ 15\% Validation $\mid$ 15\% Held-out Testing \\
+Loss Function & Binary Cross-Entropy with Label Smoothing ($\epsilon = 0.1$) \\
+Hardware Acceleration & NVIDIA CUDA with Mixed Precision (AMP) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Loss Function Formulation}
+The model is trained using Binary Cross-Entropy with Label Smoothing ($\epsilon = 0.1$):
+\begin{equation}
+\mathcal{L}_{total} = - \frac{1}{M} \sum_{i=1}^{M} \left[ y_{smooth}^{(i)} \log\left(\hat{y}^{(i)}\right) + (1 - y_{smooth}^{(i)}) \log\left(1 - \hat{y}^{(i)}\right) \right]
+\end{equation}
+where $y_{smooth} = y(1 - \epsilon) + 0.5\epsilon$.
+
+\section{Quantitative Evaluation Metrics}
+The forensic reliability is measured via Area Under ROC Curve (AUC-ROC), F1-Score, Equal Error Rate (EER), Detection Accuracy, and Inference Latency (ms/frame).
+
+\section{Benchmark Performance Targets}
+Table~\ref{tab:benchmarks} compares target performance against established baselines on FaceForensics++.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Performance Comparison with Baseline Methods on FaceForensics++}
+\label{tab:benchmarks}
+\begin{tabular}{p{4.5cm} c c c}
+\toprule
+\textbf{Model Architecture} & \textbf{FF++ (Raw) Acc.} & \textbf{FF++ (c23 Comp) Acc.} & \textbf{AUC-ROC} \\
+\midrule
+MesoNet-4 (Afchar et al.) & 90.1\% & 70.5\% & 0.752 \\
+XceptionNet (Rossler et al.) & 98.5\% & 89.3\% & 0.924 \\
+Face X-ray (Li et al.) & 98.8\% & 87.4\% & 0.912 \\
+F3-Net (Qian et al.) & 97.9\% & 90.4\% & 0.938 \\
+\midrule
+\textbf{Proposed Dual-Stream (Target)} & \textbf{$\ge$ 98.9\%} & \textbf{$\ge$ 94.2\%} & \textbf{$\ge$ 0.968} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Inference Pipeline \& Web-Based Forensic Dashboard}
+A full forensic dashboard built with FastAPI and Streamlit allows users to upload MP4 videos, view real-time frame extractions, inspect 2D-DCT spectrum maps, project Grad-CAM heatmaps, and export verifiable PDF reports.
+
+\newpage
+
+% ==================== CHAPTER 7 ====================
+\chapter{Expected Outcomes and Real-World Applications}
+
+\section{Expected Project Deliverables}
+\begin{enumerate}
+    \item \textbf{Trained PyTorch Model (.pth):} Dual-stream network weights achieving state-of-the-art compression resilience.
+    \item \textbf{Modular Forensic Codebase:} Documented Python modules covering video decoding, 2D-DCT transformation, and inference.
+    \item \textbf{Streamlit Forensic Dashboard:} Web portal with video upload, real-time probability gauge, and Grad-CAM visualization.
+    \item \textbf{Complete AKTU Project Report:} Formatted report ($>60$ pages for IV Year) with experimental logs and viva presentation.
+\end{enumerate}
+
+\section{Real-World Applications}
+\begin{itemize}
+    \item \textbf{Digital Identity Verification (e-KYC):} Prevents identity injection fraud during digital banking onboarding.
+    \item \textbf{Social Media Moderation:} Automated detection pipelines flagging synthetic news and political disinformation.
+    \item \textbf{Legal \& Judicial Evidence Verification:} Provides forensic examiners with admissible mathematical evidence and tamper heatmaps.
+    \item \textbf{Enterprise Anti-Phishing:} Prevents executive impersonation fraud in video conferencing and financial authorization.
+\end{itemize}
+
+\newpage
+
+% ==================== CHAPTER 8 ====================
+\chapter{Tentative 10-Week Work Plan (AKTU Timeline)}
+Table~\ref{tab:timeline} details the project timeline mapped directly to Section 4 of the AKTU Guidelines.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{10-Week Mini Project Work Plan (Conforming to AKTU Guidelines)}
+\label{tab:timeline}
+\begin{tabular}{p{1.8cm} p{4.2cm} p{8.0cm}}
+\toprule
+\textbf{Timeline} & \textbf{Milestone / Phase} & \textbf{Key Technical Activities \& Deliverables} \\
+\midrule
+Week 1 & Domain Finalisation & Mentor allotment (Dr. Devendra Gautam), problem scope definition, preliminary literature search, title registration. \\
+\addlinespace
+Week 2 & Synopsis Preparation & Preparation and submission of the formal project synopsis in prescribed institutional format. \\
+\addlinespace
+\textbf{Week 3} & \textbf{Synopsis Approval} & \textbf{Formal review before mentor; presentation of methodology and locking in Title Register.} \\
+\addlinespace
+Week 4 & Requirements \& Design & Mathematical formulation of 2D-DCT algorithm; system architecture design (UML, DFD); toolstack finalization. \\
+\addlinespace
+Week 5 & Implementation -- Phase I & FaceForensics++ dataset curation; video frame extraction pipeline; MTCNN face cropping; logbook signing. \\
+\addlinespace
+\textbf{Week 6} & \textbf{Mid-Term Review} & \textbf{Formal mid-term review ($\ge$30\% completion): demonstration of spatial EfficientNet pipeline.} \\
+\addlinespace
+Week 7 & Implementation -- Phase II & Implementation of 2D-DCT spectral module; bilinear cross-attention fusion network; model training. \\
+\addlinespace
+Week 8 & Integration \& Testing & End-to-end pipeline integration; Streamlit dashboard development; cross-dataset evaluation on Celeb-DF. \\
+\addlinespace
+Week 9 & Report \& Plagiarism & Drafting complete 60+ page project report; plagiarism verification (Turnitin similarity $<$ 20\%); mentor correction. \\
+\addlinespace
+\textbf{Week 10} & \textbf{Final Defense \& Viva} & \textbf{Final report binding; source code GitHub packaging; live project demonstration and defense before panel.} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\newpage
+
+% ==================== CHAPTER 9 ====================
+\chapter{Conclusion and Future Scope}
+
+\section{Conclusion}
+This synopsis establishes a comprehensive design and methodology for a Dual-Stream Spatial and Frequency-Domain Deepfake Video Detection Framework. By systematically addressing the fatal vulnerability of spatial-only models---their severe degradation under real-world video compression---the proposed system combines the representational power of EfficientNet-B4 with the mathematical invariance of 2D Discrete Cosine Transform (DCT) spectral analysis. The mathematical modeling of upsampling artifacts, paired with attention-guided bilinear feature fusion, establishes an advanced forensic defense against current and emerging generative manipulation techniques. The proposed 10-week execution roadmap ensures timely fulfillment of all AKTU academic guidelines, culminating in a fully functional, explainable forensic inspection platform.
+
+\section{Future Scope}
+\begin{enumerate}
+    \item \textbf{Audio-Visual Synchronization:} Integrating audio prosody and lip-motion correlation via Whisper/wav2vec to detect desynchronization.
+    \item \textbf{Temporal Transformer Attention:} Augmenting the frame classifier with TimeSformer / Video Transformers to model inter-frame blinking cadence.
+    \item \textbf{Edge Optimization:} Quantizing model weights using TensorRT and ONNX Runtime for deployment on mobile devices and edge security cameras.
+    \item \textbf{Diffusion Model Forensics:} Extending spectral artifact modeling to detect emerging text-to-video generative architectures (e.g., Sora, Gen-2).
+\end{enumerate}
+
+\newpage
+
+% ==================== REFERENCES ====================
+\begin{thebibliography}{99}
+\bibitem{rossler2019}
+A. Rossler, D. Cozzolino, L. Verdoliva, C. Riess, J. Thies, and M. Niessner, ``FaceForensics++: Learning to Detect Manipulated Facial Images,'' \textit{Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)}, pp. 1--11, 2019.
+
+\bibitem{frank2020}
+J. Frank, T. Eisenhofer, L. Schonherr, A. Fischer, D. Kolossa, and T. Holz, ``Leveraging Frequency Analysis for Deep Fake Image Recognition,'' \textit{Proceedings of the 37th International Conference on Machine Learning (ICML)}, PMLR, vol. 119, pp. 3247--3258, 2020.
+
+\bibitem{tan2019}
+M. Tan and Q. V. Le, ``EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks,'' \textit{Proceedings of the 36th International Conference on Machine Learning (ICML)}, PMLR, vol. 97, pp. 6105--6114, 2019.
+
+\bibitem{qian2020}
+Y. Qian, G. Yin, L. Sheng, Z. Chen, and J. Shao, ``Thinking in Frequency: Face Forgery Detection by Mining Frequency-aware Clues,'' \textit{Proceedings of the European Conference on Computer Vision (ECCV)}, Springer, pp. 86--103, 2020.
+
+\bibitem{li2020}
+Y. Li, X. Yang, P. Sun, H. Qi, and S. Lyu, ``Celeb-DF: A Large-scale Challenging Dataset for DeepFake Forensics,'' \textit{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, pp. 3207--3216, 2020.
+
+\bibitem{afchar2018}
+D. Afchar, V. Nozick, J. Yamagishi, and I. Echizen, ``MesoNet: a Compact Facial Video Forgery Detection Network,'' \textit{IEEE International Workshop on Information Forensics and Security (WIFS)}, pp. 1--7, 2018.
+
+\bibitem{durall2020}
+R. Durall, M. Keuper, and J. Keuper, ``Watch your Up-Convolution: CNN Based Generative Deep Neural Networks are Failing to Reproduce Spectral Distributions,'' \textit{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, pp. 7890--7899, 2020.
+
+\bibitem{loshchilov2019}
+I. Loshchilov and F. Hutter, ``Decoupled Weight Decay Regularization,'' \textit{International Conference on Learning Representations (ICLR)}, pp. 1--10, 2019.
+
+\bibitem{selvaraju2020}
+R. R. Selvaraju, M. Cogswell, A. Das, A. Vedaldi, D. Parikh, and D. Batra, ``Grad-CAM: Visual Explanations from Deep Networks via Gradient-Based Localization,'' \textit{International Journal of Computer Vision (IJCV)}, vol. 128, no. 2, pp. 336--359, 2020.
+
+\bibitem{zhang2016}
+K. Zhang, Z. Zhang, Z. Li, and Y. Qiao, ``Joint Face Detection and Alignment Using Multitask Cascaded Convolutional Networks,'' \textit{IEEE Signal Processing Letters}, vol. 23, no. 10, pp. 1499--1503, 2016.
+\end{thebibliography}
+
+\newpage
+
+% ==================== STUDENT INFO ====================
+\chapter*{Student \& Guide Information Summary}
+\addcontentsline{toc}{chapter}{Student \& Guide Information Summary}
+\thispagestyle{plain}
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{p{5.5cm} p{9.0cm}}
+\toprule
+\textbf{Student Full Name} & Dev Rana Kaila \\
+\textbf{University Roll / Enrollment No.} & 2301531530023 \\
+\textbf{Degree \& Branch} & B.Tech in Computer Science \& Engineering (AIML) \\
+\textbf{Current Semester \& Year} & Semester VII (Final Year, 4th Year) \\
+\textbf{Academic Institution} & Lloyd Institute of Engineering \& Technology, Greater Noida \\
+\textbf{Affiliating University} & Dr. A.P.J. Abdul Kalam Technical University (AKTU), Lucknow \\
+\textbf{Department} & Department of Computer Science \& Engineering \& Allied Branches \\
+\textbf{Project Guide / Supervisor} & Dr. Devendra Gautam (Associate Professor) \\
+\textbf{Guide's Administrative Role} & Mini Project / Internship Coordinator \\
+\textbf{Project Title} & Dual-Stream Spatial and Frequency-Domain Deepfake Video Detection using EfficientNet and Discrete Cosine Transform (DCT) \\
+\textbf{Academic Session} & 2026--2027 \\
+\textbf{Evaluation Track} & Mini Project / Major Project--I (100-Mark AKTU Scheme) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\vspace{3.5cm}
+\noindent
+\begin{minipage}[t]{0.45\textwidth}
+    \rule{6cm}{0.4pt}\\[0.2cm]
+    \textbf{Student Signature}\\
+    (Dev Rana Kaila)
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.45\textwidth}
+    \raggedleft
+    \rule{6cm}{0.4pt}\\[0.2cm]
+    \textbf{Project Guide Signature}\\
+    (Dr. Devendra Gautam)
+\end{minipage}
+
+\end{document}
