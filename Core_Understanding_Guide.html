@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeepGuard AI — Core Understanding Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+  :root {
+    --bg: #0a0e1a; --card: #111827; --card2: #1a2035;
+    --cyan: #00d4ff; --blue: #3b82f6; --purple: #8b5cf6;
+    --green: #10b981; --orange: #f59e0b; --red: #ef4444;
+    --text: #f1f5f9; --muted: #94a3b8; --dim: #64748b;
+    --border: #1e293b;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+  .container { max-width: 960px; margin: 0 auto; padding: 40px 24px 100px; }
+  h1 { font-size: 2.5rem; font-weight: 900; background: linear-gradient(135deg, var(--cyan), var(--blue), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
+  h2 { font-size: 1.6rem; font-weight: 800; color: var(--cyan); margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid var(--border); }
+  h3 { font-size: 1.15rem; font-weight: 700; color: var(--blue); margin: 24px 0 10px; }
+  h4 { font-size: 1rem; font-weight: 600; color: var(--orange); margin: 16px 0 8px; }
+  p { color: var(--muted); margin-bottom: 14px; font-size: 15px; }
+  strong { color: var(--text); }
+  .card { background: var(--card2); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin: 16px 0; }
+  .card-cyan { border-left: 4px solid var(--cyan); }
+  .card-green { border-left: 4px solid var(--green); }
+  .card-purple { border-left: 4px solid var(--purple); }
+  .card-orange { border-left: 4px solid var(--orange); }
+  .card-red { border-left: 4px solid var(--red); }
+  .formula { background: rgba(0,212,255,0.07); border: 1px solid rgba(0,212,255,0.25); border-radius: 8px; padding: 16px 20px; font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--cyan); margin: 12px 0; line-height: 1.8; }
+  .qa { background: var(--card); border-radius: 12px; padding: 20px; margin: 12px 0; }
+  .qa .q { color: var(--orange); font-weight: 700; font-size: 15px; margin-bottom: 8px; }
+  .qa .a { color: var(--muted); font-size: 14px; }
+  .qa .a strong { color: var(--green); }
+  .tag { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; margin: 2px; }
+  .t-cyan { background: rgba(0,212,255,0.15); color: var(--cyan); }
+  .t-blue { background: rgba(59,130,246,0.15); color: var(--blue); }
+  .t-green { background: rgba(16,185,129,0.15); color: var(--green); }
+  .t-purple { background: rgba(139,92,246,0.15); color: var(--purple); }
+  .t-orange { background: rgba(245,158,11,0.15); color: var(--orange); }
+  .toc { background: var(--card); border-radius: 12px; padding: 24px; margin: 24px 0; }
+  .toc a { display: block; color: var(--muted); text-decoration: none; padding: 6px 0; font-size: 14px; border-bottom: 1px solid var(--border); }
+  .toc a:hover { color: var(--cyan); }
+  .toc a:last-child { border-bottom: none; }
+  .toc-num { color: var(--cyan); font-family: 'JetBrains Mono'; font-weight: 600; margin-right: 8px; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  th { background: var(--card2); color: var(--cyan); padding: 10px 14px; text-align: left; border-bottom: 2px solid var(--cyan); }
+  td { padding: 9px 14px; border-bottom: 1px solid var(--border); color: var(--muted); }
+  tr:last-child td { border-bottom: 2px solid var(--green); color: var(--green); font-weight: 600; }
+  .hero-badge { display: inline-block; padding: 6px 18px; border: 1px solid var(--cyan); border-radius: 999px; font-size: 13px; color: var(--cyan); font-family: 'JetBrains Mono'; margin-bottom: 20px; }
+  .alert { border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 14px; }
+  .alert-tip { background: rgba(16,185,129,0.1); border: 1px solid var(--green); color: var(--green); }
+  .alert-warn { background: rgba(245,158,11,0.1); border: 1px solid var(--orange); color: var(--orange); }
+  ul, ol { padding-left: 24px; color: var(--muted); font-size: 15px; }
+  li { margin-bottom: 8px; }
+  li strong { color: var(--text); }
+  code { font-family: 'JetBrains Mono'; background: rgba(255,255,255,0.07); padding: 2px 7px; border-radius: 4px; font-size: 13px; color: var(--cyan); }
+  .step { display: flex; gap: 16px; margin-bottom: 20px; }
+  .step-num { width: 36px; height: 36px; background: linear-gradient(135deg, var(--cyan), var(--blue)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0; color: #000; }
+  .file-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; margin: 8px 0; }
+  .file-name { font-family: 'JetBrains Mono'; color: var(--cyan); font-size: 13px; font-weight: 600; }
+  .file-desc { color: var(--muted); font-size: 13px; margin-top: 4px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="hero-badge">🎓 B.Tech CSE-AIML • Semester VII • For Dev Rana Kaila Only</div>
+<h1>DeepGuard AI<br>Core Understanding Guide</h1>
+<p style="font-size:17px; color: var(--text);">Everything you need to understand, explain, and defend your project. Written in simple language — no jargon, real analogies, ready-made answers.</p>
+
+<div class="toc">
+  <h3 style="margin-top:0; color:var(--text);">📋 What's Inside</h3>
+  <a href="#s1"><span class="toc-num">01</span> What is Your Project? (One-Para Summary)</a>
+  <a href="#s2"><span class="toc-num">02</span> What is a Deepfake? (Simple Explanation)</a>
+  <a href="#s3"><span class="toc-num">03</span> Why Existing Systems Fail</a>
+  <a href="#s4"><span class="toc-num">04</span> Your 5 Novel Contributions</a>
+  <a href="#s5"><span class="toc-num">05</span> EfficientNet-B4 Explained Simply</a>
+  <a href="#s6"><span class="toc-num">06</span> DCT Explained Simply (Music Analogy)</a>
+  <a href="#s7"><span class="toc-num">07</span> Attention-Gated Fusion Explained</a>
+  <a href="#s8"><span class="toc-num">08</span> Grad-CAM Explained Simply</a>
+  <a href="#s9"><span class="toc-num">09</span> What Each File in Your Project Does</a>
+  <a href="#s10"><span class="toc-num">10</span> How to Demo the App to Professors</a>
+  <a href="#s11"><span class="toc-num">11</span> 25 Expected Viva Questions + Answers</a>
+  <a href="#s12"><span class="toc-num">12</span> Evaluation Rubric — How to Score Full Marks</a>
+</div>
+
+<!-- SECTION 1 -->
+<h2 id="s1">01. What is Your Project? (One-Para)</h2>
+<div class="card card-cyan">
+<p style="font-size:16px; color: var(--text);">Your project is an AI system called <strong>DeepGuard AI</strong> that detects deepfake videos — videos where someone's face has been replaced using AI. Most existing detection systems only look at pixels (like checking a photo with your eyes). Yours is different: it looks at pixels <em>AND</em> the hidden mathematical patterns (frequency domain) inside the image simultaneously. These two "analysis streams" then combine their findings through a smart decision gate. The result is a system that keeps working even when videos are compressed by WhatsApp or YouTube — something no other competition-winning system can do — and it shows you exactly <em>where</em> in the face the fake was detected.</p>
+</div>
+<div class="alert alert-tip">🏆 <strong>Pitch to professor in 10 seconds:</strong> "Sir, my project detects deepfake videos by analyzing both the pixel appearance AND the frequency-domain fingerprints left by GAN generators. This dual-stream approach, combined with Grad-CAM explainability and a live web dashboard, addresses the key limitations of current state-of-the-art systems."</div>
+
+<!-- SECTION 2 -->
+<h2 id="s2">02. What is a Deepfake?</h2>
+<h3>Simple Analogy</h3>
+<p>Imagine you have a rubber mask of Elon Musk's face. You wear it, and from a distance, people think you're Elon Musk. A deepfake is like that — but done with AI at the pixel level. The AI takes your face in a video and replaces it with someone else's face, frame by frame, so smoothly that it's nearly impossible to detect with the human eye.</p>
+<div class="card card-purple">
+<h4>How are Deepfakes Made? (Technical Version)</h4>
+<ul>
+  <li><strong>Step 1 — Encoder:</strong> A neural network learns to extract the "identity" features from a face (who the person is) and "expression" features (what emotion they're showing).</li>
+  <li><strong>Step 2 — Decoder:</strong> A separate neural network takes those features and reconstructs a new face. By swapping encoders between person A and person B, you get person A's expression on person B's face.</li>
+  <li><strong>Step 3 — GAN Training:</strong> A "discriminator" network judges whether the output looks real. The generator and discriminator train against each other until the fake looks indistinguishable.</li>
+  <li><strong>The Flaw:</strong> The decoder uses "transposed convolutions" for upsampling (making the image bigger). This process leaves periodic mathematical "ripples" in the frequency domain — invisible to eyes, but detectable by DCT analysis.</li>
+</ul>
+</div>
+
+<!-- SECTION 3 -->
+<h2 id="s3">03. Why Existing Systems Fail</h2>
+<div class="card card-red">
+<h3 style="color:var(--red); margin-top:0;">❌ The Compression Problem</h3>
+<p>When you upload a video to WhatsApp, YouTube, or Instagram, the platform <strong>compresses</strong> it using H.264/H.265 codecs to save storage. This compression:</p>
+<ul>
+  <li>Removes subtle pixel-level manipulation artifacts (the clues spatial detectors rely on)</li>
+  <li>Causes spatial-only models like XceptionNet to drop from 98.5% accuracy → 89.3% (c23 compression) → much lower on heavy compression</li>
+  <li>Means deepfakes shared on social media survive detection by most systems</li>
+</ul>
+<p><strong>Why DCT fingerprints survive compression:</strong> The periodic GAN upsampling artifacts appear at specific frequencies in the DCT spectrum. JPEG/H.264 compression preserves low-to-mid frequency energy while discarding only extreme high frequencies. The GAN fingerprints sit in mid-frequencies — they <em>survive</em> compression.</p>
+</div>
+
+<!-- SECTION 4 -->
+<h2 id="s4">04. Your 5 Novel Contributions</h2>
+<div class="card card-green">
+<h3 style="margin-top:0; color:var(--green);">Compared to Selim Seferbekov's Kaggle DFDC 1st-Place Winner</h3>
+<table>
+  <tr><th>Feature</th><th>Kaggle Winner (Selim)</th><th>Your Project</th></tr>
+  <tr><td>Architecture</td><td>Single spatial stream</td><td>Dual-stream (spatial + frequency)</td></tr>
+  <tr><td>Frequency Analysis</td><td>❌ None</td><td>✅ 2D-DCT + Radial Spectrum</td></tr>
+  <tr><td>Fusion</td><td>N/A</td><td>✅ Attention-gated bilinear</td></tr>
+  <tr><td>Explainability</td><td>❌ Black box</td><td>✅ Grad-CAM heatmaps</td></tr>
+  <tr><td>Web Interface</td><td>❌ CLI only</td><td>✅ Streamlit dashboard</td></tr>
+</table>
+</div>
+
+<h3>Contribution 1: Dual-Stream Architecture</h3>
+<p>Most detectors have one "brain" that looks at pixels. Yours has two brains working simultaneously: one for pixels (EfficientNet-B4) and one for frequency patterns (2D-DCT + Spectral CNN). Together, they catch what neither alone can.</p>
+
+<h3>Contribution 2: Radial Azimuthal DCT Spectrum A(r)</h3>
+<div class="formula">A(r) = (1 / |S_r|) × Σ |F(u,v)| where r = √(u² + v²)
+
+Meaning: Average of all DCT coefficients at distance r from the center.
+Result: A 1D curve that shows exactly how energy is distributed by frequency.
+Real faces → smooth curve. Fake faces → bumps and spikes at periodic intervals.</div>
+<p>This is <strong>your original mathematical formulation</strong>. No Kaggle winner used this. It was theorized by Frank et al. (2020) but you implemented it as a working neural network input feature.</p>
+
+<h3>Contribution 3: Attention-Gated Bilinear Fusion</h3>
+<div class="formula">g = sigmoid( W_gate × [v_spatial || v_freq] + b_gate )
+v_fused = [ g ⊙ v_spatial ] || [ (1-g) ⊙ v_freq_projected ]
+
+Meaning: g is a number between 0 and 1 for each feature dimension.
+If g=0.8 → trust spatial 80%, frequency 20%.
+If g=0.3 → trust spatial 30%, frequency 70% (useful for compressed videos).
+The model learns g automatically during training. No manual tuning.</div>
+
+<h3>Contribution 4: Grad-CAM Forensic Explainability</h3>
+<p>Grad-CAM computes which input pixels caused the output decision. It backpropagates the "FAKE" signal through the network and finds where the gradients are strongest. Those regions get colored red on the heatmap. Result: you can literally <em>see</em> which part of the face was manipulated.</p>
+
+<h3>Contribution 5: Streamlit Forensic Dashboard</h3>
+<p>A web app anyone can use: upload a video → get frame-by-frame analysis → see confidence gauges → generate Grad-CAM heatmaps → view DCT spectrum visualization. No coding required. Bridges research and real-world forensic use.</p>
+
+<!-- SECTION 5 -->
+<h2 id="s5">05. EfficientNet-B4 Explained Simply</h2>
+<div class="card card-blue">
+<h3 style="margin-top:0;">The Analogy: A Smart Camera</h3>
+<p>Think of EfficientNet-B4 as a camera that automatically adjusts its zoom, resolution, and depth-of-field simultaneously for maximum detail. Normal cameras (networks) adjust only one thing at a time. EfficientNet adjusts all three using a mathematical formula called <strong>compound scaling</strong>.</p>
+</div>
+<h3>How It Works (Layer by Layer)</h3>
+<ol>
+  <li><strong>Input:</strong> 256×256 RGB face image (3 color channels)</li>
+  <li><strong>Stage 1–2 (Shallow layers):</strong> Detects simple edges, corners, color boundaries — "Is there an edge here?"</li>
+  <li><strong>Stage 3–4 (Mid layers):</strong> Recognizes facial parts — eyes, nose, mouth, jaw shape</li>
+  <li><strong>Stage 5–6 (Deep layers):</strong> Detects abstract features — skin texture smoothness, blending artifacts, reflection consistency</li>
+  <li><strong>Global Average Pool → 1792-d vector:</strong> Compresses all that spatial knowledge into 1,792 numbers describing the face</li>
+</ol>
+<div class="formula">Input (256×256×3) → MBConv Blocks × 32 → GlobalAvgPool → Output: [batch, 1792]
+
+MBConv = Mobile Inverted Bottleneck Convolution
+  → Expand channels (1×1 conv)
+  → Apply depthwise 3×3 conv (learn patterns)
+  → Squeeze-Excite attention (focus on important channels)
+  → Project back down (1×1 conv)</div>
+<p><strong>Why B4 and not B7?</strong> B7 has 66M parameters (254 MB). B4 has 19.3M parameters (~85 MB) and achieves 97%+ of B7's accuracy. B4 is 3× smaller and 4× faster — perfect for a student project running on CPU.</p>
+
+<!-- SECTION 6 -->
+<h2 id="s6">06. DCT Explained Simply — The Music Analogy</h2>
+<div class="card card-purple">
+<h3 style="margin-top:0;">🎵 Imagine a Song</h3>
+<p>When you listen to music, you hear it as one combined sound. But a <strong>music equalizer</strong> breaks it down into bass (low frequencies), mid-range, and treble (high frequencies). You can see visually if the bass is too loud or the treble is missing.</p>
+<p><strong>DCT does the exact same thing to images.</strong> It breaks a 256×256 face image into frequency components — low (smooth backgrounds), medium (facial edges), and high (skin texture, fine detail).</p>
+</div>
+<div class="formula">F(u,v) = α(u)·α(v) · Σ Σ f(x,y) · cos[π(2x+1)u/2N] · cos[π(2y+1)v/2N]
+
+What this means:
+  f(x,y) = pixel value at position (x,y) in the image
+  F(u,v) = how much of frequency pattern (u,v) exists in the image
+  u,v = frequency coordinates (u=0,v=0 is the DC component = average brightness)
+  N = 256 (image size)
+  α(k) = normalization factor: √(1/N) if k=0, else √(2/N)</div>
+<h3>What the DCT Reveals About Fakes</h3>
+<ul>
+  <li><strong>Real face DCT:</strong> Energy concentrated in center (low frequencies). Smooth radial decline outward. Natural.</li>
+  <li><strong>Fake face DCT:</strong> Periodic bright spots appear in a grid pattern. These are from the GAN generator's transposed convolution (upsampling) layers creating regular repetitions.</li>
+  <li><strong>Radial spectrum A(r):</strong> A graph where x-axis = frequency radius, y-axis = average energy. Real faces show smooth decline. Fake faces show bumps at specific radii.</li>
+</ul>
+<div class="alert alert-tip">📢 <strong>Viva tip:</strong> If professor asks "explain DCT", say: "Sir, DCT converts a spatial image into frequency components, similar to how a music equalizer separates a song into bass, mid, and treble. GAN generators leave systematic periodic artifacts in the DCT spectrum because their transposed convolution upsampling layers create repeating patterns — like a printer that always has a slightly uneven ink head."</div>
+
+<!-- SECTION 7 -->
+<h2 id="s7">07. Attention-Gated Fusion — The Jury Analogy</h2>
+<div class="card card-orange">
+<h3 style="margin-top:0;">⚖️ Imagine Two Expert Witnesses</h3>
+<p>You're a judge. Expert A (Spatial) says: "I see slight blurring near the jaw — 60% suspicious." Expert B (Frequency) says: "I see a strong GAN grid pattern — 95% suspicious." The attention gate is your brain: it decides to trust Expert B more this time because their evidence is stronger.</p>
+<p>Now imagine the video is heavily compressed. Expert A (Spatial) can barely see anything through the compression noise — their evidence is weak. Expert B (Frequency) can still see the GAN fingerprints because they survive compression. The gate automatically shifts trust to Expert B.</p>
+</div>
+<div class="formula">Step 1: Concatenate features
+  combined = [v_spatial (1792-d) || v_freq (512-d)] → 2304-d vector
+
+Step 2: Compute gate
+  g = sigmoid(W_gate × combined + b_gate)
+  g is a vector of 1792 values, each between 0 and 1
+
+Step 3: Apply gate
+  weighted_spatial = g × v_spatial (element-wise)
+  weighted_freq    = (1-g) × W_proj × v_freq
+  v_fused = concat(weighted_spatial, weighted_freq) → 3584-d → FC → 1024-d</div>
+<p><strong>The W_gate matrix</strong> is learned during training. The model sees thousands of (fake, real) × (compressed, uncompressed) examples and learns: "when spatial features are uncertain, trust frequency more."</p>
+
+<!-- SECTION 8 -->
+<h2 id="s8">08. Grad-CAM Explained Simply — The Spotlight</h2>
+<div class="card card-cyan">
+<h3 style="margin-top:0;">🔦 Imagine a Spotlight</h3>
+<p>After the model says "FAKE," you ask it: "Show me what you were looking at when you made that decision." Grad-CAM works backwards through the network — it finds which parts of the last convolutional layer's feature maps were most responsible for the FAKE decision, then projects those locations back onto the original image as a colored heatmap.</p>
+</div>
+<h3>How Grad-CAM Works (Steps)</h3>
+<ol>
+  <li><strong>Forward pass:</strong> Run the image through EfficientNet-B4. Get the FAKE prediction.</li>
+  <li><strong>Backward pass:</strong> Compute gradients of the FAKE score with respect to the last conv layer's feature maps.</li>
+  <li><strong>Weight maps:</strong> Average the gradients over all positions → get importance weights for each feature map channel.</li>
+  <li><strong>Weighted sum:</strong> Multiply each feature map by its weight and sum → get a rough activation map.</li>
+  <li><strong>Upsample + colorize:</strong> Resize back to 256×256, apply red-yellow-blue colormap (red = most suspicious).</li>
+</ol>
+<div class="alert alert-tip">📢 <strong>Viva tip:</strong> "Sir, Grad-CAM applies gradient backpropagation to identify which spatial regions of the input image contributed most to the deepfake classification decision. Red regions on the heatmap indicate high importance — these are the areas where the model detected manipulation artifacts, such as blending boundaries or unnatural skin texture transitions."</div>
+
+<!-- SECTION 9 -->
+<h2 id="s9">09. What Each File in Your Project Does</h2>
+<div class="file-card"><div class="file-name">src/models/spatial_stream.py</div><div class="file-desc">Loads EfficientNet-B4 from the timm library (pretrained on ImageNet). Removes the final classification head. Returns 1792-dimensional feature vectors for each input face image.</div></div>
+<div class="file-card"><div class="file-name">src/data/dct_transform.py</div><div class="file-desc">Converts RGB face images to grayscale, applies 2D DCT using scipy, computes log-scaled magnitude spectrum, and calculates the radial azimuthal average A(r). Returns a 256×256 frequency map tensor.</div></div>
+<div class="file-card"><div class="file-name">src/models/frequency_stream.py</div><div class="file-desc">A 4-stage Spectral CNN that processes the DCT frequency map. Uses depthwise separable convolutions (faster, fewer parameters). Outputs a 512-dimensional frequency feature vector.</div></div>
+<div class="file-card"><div class="file-name">src/models/fusion.py</div><div class="file-desc">The attention-gated bilinear fusion module. Takes the 1792-d spatial and 512-d frequency vectors, projects them to the same space, computes the gate g, and outputs a 1024-d fused representation.</div></div>
+<div class="file-card"><div class="file-name">src/models/dual_stream_net.py</div><div class="file-desc">The main model class that combines SpatialStream + FrequencyStream + AttentionFusion + Classification Head. Input: (x_rgb, x_dct). Output: dictionary with logits, probabilities, and intermediate features.</div></div>
+<div class="file-card"><div class="file-name">src/models/selim_classifier.py</div><div class="file-desc">Implements Selim Seferbekov's Kaggle DFDC 1st-place model architecture (EfficientNet-B7, spatial only). Used to load the pretrained 254MB checkpoint for inference comparison. Shows what a spatial-only detector looks like.</div></div>
+<div class="file-card"><div class="file-name">src/utils/gradcam.py</div><div class="file-desc">GradCAM class that hooks into the EfficientNet's last convolutional layer. Computes gradient-weighted activation maps and returns them as a colored heatmap overlay on the original face image.</div></div>
+<div class="file-card"><div class="file-name">train.py</div><div class="file-desc">Complete training pipeline. Uses AdamW optimizer, CosineAnnealing learning rate schedule, early stopping (patience=6), mixed precision (AMP for GPU), and BCE with label smoothing (ε=0.1).</div></div>
+<div class="file-card"><div class="file-name">inference.py</div><div class="file-desc">Command-line inference script. Auto-detects whether selim_dfdc_b7.pth or best_model.pth is available. Handles image + video inference. Outputs Real/Fake verdict with confidence percentage.</div></div>
+<div class="file-card"><div class="file-name">app.py</div><div class="file-desc">The Streamlit web dashboard. Has 4 pages: Home (upload + analyze), How It Works (explainer), Demo (quick test), and About. Shows Plotly confidence gauge, frame timeline, DCT spectrum, and Grad-CAM heatmap.</div></div>
+
+<!-- SECTION 10 -->
+<h2 id="s10">10. How to Demo the App to Professors</h2>
+<div class="card card-green">
+<h3 style="margin-top:0;">Step-by-Step Demo Script</h3>
+<div class="step"><div class="step-num">1</div><div><strong>Open terminal, navigate to project, run:</strong><br><code>cd D:\mini-project && streamlit run app.py</code><br>The browser opens automatically at localhost:8501.</div></div>
+<div class="step"><div class="step-num">2</div><div><strong>Say to professor:</strong> "Sir, this is the DeepGuard AI forensic dashboard. I can upload any video and detect whether it's real or fake in real-time."</div></div>
+<div class="step"><div class="step-num">3</div><div><strong>Upload demo/sample_videos/sample_real_video.mp4</strong><br>Click Analyze. Say: "This is a real video — notice the gauge shows high confidence in REAL."</div></div>
+<div class="step"><div class="step-num">4</div><div><strong>Upload demo/sample_videos/sample_fake_video.mp4</strong><br>Click Analyze. Say: "This is a fake video — the gauge shifts to FAKE. You can see the frame-by-frame timeline below."</div></div>
+<div class="step"><div class="step-num">5</div><div><strong>Click "Generate Grad-CAM"</strong><br>Say: "Sir, this heatmap shows exactly which regions of the face triggered the detection — in red are the areas with manipulation artifacts, typically around jaw boundaries or eye regions."</div></div>
+<div class="step"><div class="step-num">6</div><div><strong>Navigate to "How It Works" page</strong><br>Say: "Sir, this page explains the dual-stream architecture — pixel analysis and frequency analysis working together."</div></div>
+</div>
+<div class="alert alert-warn">⚠️ If Streamlit doesn't start, run: <code>pip install streamlit plotly</code> first.</div>
+
+<!-- SECTION 11 -->
+<h2 id="s11">11. 25 Expected Viva Questions + Answers</h2>
+
+<div class="qa"><div class="q">Q1. What is the objective of your project?</div><div class="a">"Sir, the objective is to develop a dual-stream deep learning system that detects deepfake videos by simultaneously analyzing facial images in the spatial pixel domain using EfficientNet-B4 and the frequency domain using 2D Discrete Cosine Transform. The system addresses the key limitation of existing detectors — their accuracy degradation under video compression — and provides Grad-CAM visual explanations and an interactive web dashboard."</div></div>
+
+<div class="qa"><div class="q">Q2. What is a deepfake?</div><div class="a">"Sir, a deepfake is an AI-generated video in which a person's face is replaced with another person's face using deep learning models — specifically Generative Adversarial Networks. The GAN learns to generate realistic facial appearances by training a generator against a discriminator until the fake is indistinguishable from real footage."</div></div>
+
+<div class="qa"><div class="q">Q3. What is EfficientNet and why did you choose B4?</div><div class="a">"Sir, EfficientNet is a family of CNNs designed by Google Brain that achieves superior accuracy by compound-scaling depth, width, and resolution simultaneously using the formula d=α^φ, w=β^φ, r=γ^φ. I chose B4 over B7 because B4 has 19.3 million parameters versus 66 million for B7, making it 3× more efficient while achieving comparable accuracy for deepfake feature extraction. B4 is also more suitable for CPU deployment."</div></div>
+
+<div class="qa"><div class="q">Q4. What is DCT and how does it help detect deepfakes?</div><div class="a">"Sir, the 2D Discrete Cosine Transform converts a spatial image into its frequency components — similar to a music equalizer that breaks a song into bass, mid, and treble. GAN generators use transposed convolutions for upsampling, which introduce periodic checkerboard artifacts in the frequency domain. These artifacts appear as regular spikes in the DCT spectrum and persist even after video compression, making them reliable fingerprints for detection."</div></div>
+
+<div class="qa"><div class="q">Q5. What is attention-gated fusion?</div><div class="a">"Sir, attention-gated fusion is a learnable mechanism that computes a gate vector g = sigmoid(W × [v_spatial || v_freq] + b). This gate assigns a weight between 0 and 1 to each feature dimension, dynamically controlling how much each stream contributes. Under heavy video compression, the spatial stream becomes less reliable, so the gate automatically shifts trust toward the frequency stream."</div></div>
+
+<div class="qa"><div class="q">Q6. What is Grad-CAM?</div><div class="a">"Sir, Grad-CAM stands for Gradient-weighted Class Activation Mapping. It computes the gradient of the classification score with respect to the last convolutional layer's feature maps, averages the gradients channel-wise to get importance weights, then creates a weighted sum of the feature maps. This produces a heatmap showing which facial regions most influenced the deepfake detection decision."</div></div>
+
+<div class="qa"><div class="q">Q7. What datasets did you use?</div><div class="a">"Sir, I used FaceForensics++ (FF++), which contains 1,000 real YouTube videos and 4,000 manipulated videos created using four methods: Deepfakes, Face2Face, FaceSwap, and NeuralTextures. It has three compression tiers: raw, c23 (light), and c40 (heavy). I also used Celeb-DF v2 for cross-dataset evaluation, which contains 590 real and 5,639 high-quality celebrity deepfake videos."</div></div>
+
+<div class="qa"><div class="q">Q8. What is label smoothing and why did you use it?</div><div class="a">"Sir, label smoothing replaces hard labels (0 or 1) with soft labels (0.05 and 0.95) by the formula y_smooth = y(1-ε) + 0.5ε where ε=0.1. This prevents the model from becoming overconfident and improves generalization to unseen deepfake methods it was not trained on."</div></div>
+
+<div class="qa"><div class="q">Q9. What optimizer did you use and why?</div><div class="a">"Sir, I used AdamW — Adam with Decoupled Weight Decay. Standard Adam includes weight decay in the gradient update, which causes interference. AdamW separates them, providing cleaner regularization. Combined with Cosine Annealing learning rate schedule, it achieves better convergence and generalization."</div></div>
+
+<div class="qa"><div class="q">Q10. What is the difference between your project and the Kaggle DFDC winner?</div><div class="a">"Sir, the Kaggle DFDC 1st-place solution by Selim Seferbekov uses a single EfficientNet-B7 spatial-only classifier. It has no frequency analysis, no explainability, no web interface, and is vulnerable to video compression. My project adds four novel contributions: a parallel DCT frequency stream with radial azimuthal spectrum formulation, attention-gated bilinear fusion, Grad-CAM explainability, and a Streamlit forensic dashboard."</div></div>
+
+<div class="qa"><div class="q">Q11. What is MTCNN and how does it work?</div><div class="a">"Sir, MTCNN stands for Multi-task Cascaded Convolutional Network. It's a three-stage face detection pipeline: the first stage (P-Net) proposes candidate face regions quickly, the second stage (R-Net) refines candidates, and the third stage (O-Net) outputs the final face bounding boxes with 5 facial landmarks. I use it to crop faces with a 15% contextual margin to capture blending artifacts at face boundaries."</div></div>
+
+<div class="qa"><div class="q">Q12. What is AUC-ROC and why do you use it?</div><div class="a">"Sir, AUC-ROC stands for Area Under the Receiver Operating Characteristic Curve. It measures the model's ability to discriminate between real and fake videos across all possible classification thresholds, making it threshold-independent. A score of 1.0 is perfect. I target AUC-ROC ≥ 0.968, which outperforms baseline models like MesoNet (0.752) and XceptionNet (0.924)."</div></div>
+
+<div class="qa"><div class="q">Q13. What is Squeeze-and-Excitation in EfficientNet?</div><div class="a">"Sir, Squeeze-and-Excitation is a channel attention mechanism inside each MBConv block. It 'squeezes' the feature map using global average pooling to get a channel descriptor, then 'excites' by passing it through two fully connected layers with sigmoid activation to produce per-channel weights. This allows the network to focus on the most discriminative channels and suppress less useful ones."</div></div>
+
+<div class="qa"><div class="q">Q14. How does your system handle video (not just images)?</div><div class="a">"Sir, the system extracts frames from the input video at 5 frames per second using OpenCV. For each frame, MTCNN detects and crops the face. Each face crop is analyzed by the dual-stream model independently. The final video verdict is computed as the weighted average of per-frame predictions, with higher weights for frames where the model shows higher confidence."</div></div>
+
+<div class="qa"><div class="q">Q15. What is the Radial Azimuthal DCT Spectrum?</div><div class="a">"Sir, after computing the 2D DCT of a face image, I compute the radial average spectrum A(r) = average of all |F(u,v)| at radius r = √(u²+v²) from the DC component. This compresses a 2D frequency map into a 1D curve that is rotationally invariant. Real faces show a smooth exponential decline. Fake faces show periodic bumps corresponding to the GAN's upsampling grid frequency."</div></div>
+
+<div class="qa"><div class="q">Q16. What is depthwise separable convolution?</div><div class="a">"Sir, a standard convolution applies one 3×3 filter across all input channels simultaneously. A depthwise separable convolution splits this into two steps: first a depthwise convolution applies one filter per input channel independently, then a pointwise 1×1 convolution combines channels. This achieves similar results with 8–9× fewer operations, making the frequency stream CNN faster and lighter."</div></div>
+
+<div class="qa"><div class="q">Q17. What is the GitHub link for your project?</div><div class="a">"Sir, the complete project code, documentation, presentation, synopsis, and weekly log are available at <strong>github.com/DevRanaKaila/DeepGuard-AI</strong>."</div></div>
+
+<div class="qa"><div class="q">Q18. What is layer normalization and where do you use it?</div><div class="a">"Sir, layer normalization normalizes activations across the feature dimension (not the batch dimension like batch normalization). I use it in the classification head between the first FC layer and the ReLU activation. It stabilizes training and reduces the need for careful learning rate tuning, especially useful when batch sizes are small."</div></div>
+
+<div class="qa"><div class="q">Q19. How is your system useful in real life?</div><div class="a">"Sir, the system has four practical applications: (1) Digital banking KYC verification — detecting fake video calls used to impersonate customers. (2) Social media moderation — automatically flagging manipulated political videos before they spread. (3) Legal/judicial evidence verification — providing Grad-CAM heatmaps as forensic evidence showing where the manipulation occurred. (4) Corporate security — protecting against executive impersonation for fraudulent fund transfers."</div></div>
+
+<div class="qa"><div class="q">Q20. What is Cosine Annealing learning rate schedule?</div><div class="a">"Sir, cosine annealing periodically decreases the learning rate following a cosine curve from a maximum value (1e-4) to a minimum (1e-6) over T_0=10 epochs, then restarts. This 'warm restart' helps the model escape local minima and explore the loss landscape more effectively, often resulting in better final accuracy than a fixed learning rate."</div></div>
+
+<div class="qa"><div class="q">Q21. What is the difference between spatial and frequency domain?</div><div class="a">"Sir, the spatial domain represents an image as pixel values at specific positions — what you see with your eyes. The frequency domain represents the same image as frequency components — how fast pixel values change across the image. Low frequencies represent slow changes (smooth backgrounds), high frequencies represent rapid changes (edges, textures). GAN artifacts appear as periodic patterns in the frequency domain that are invisible in the spatial domain."</div></div>
+
+<div class="qa"><div class="q">Q22. Why do GAN generators create checkerboard artifacts?</div><div class="a">"Sir, GAN generators use transposed convolutions (also called deconvolutions) for upsampling — to increase image resolution from small to large. Due to the kernel stride, certain output pixels receive contributions from multiple filter positions while others receive fewer. This uneven overlap creates a periodic grid pattern — visible as checkerboard artifacts in the frequency domain."</div></div>
+
+<div class="qa"><div class="q">Q23. What is early stopping and why did you use it?</div><div class="a">"Sir, early stopping monitors validation loss during training. If the validation loss does not improve for 'patience' consecutive epochs (I set patience=6), training is stopped and the best checkpoint is saved. This prevents overfitting — the model memorizing training data instead of generalizing to new videos."</div></div>
+
+<div class="qa"><div class="q">Q24. What is mixed precision training?</div><div class="a">"Sir, mixed precision training uses 16-bit floating point (FP16) for forward pass computations and 32-bit (FP32) for gradient updates. This halves memory usage and doubles computation speed on compatible NVIDIA GPUs, without sacrificing accuracy. I implemented it using PyTorch's torch.cuda.amp (Automatic Mixed Precision) module."</div></div>
+
+<div class="qa"><div class="q">Q25. What would you improve if you had more time?</div><div class="a">"Sir, three improvements: First, I would add audio-visual synchronization analysis using lip-motion correlation with the audio signal, since deepfakes often desynchronize lip movements. Second, I would apply model quantization using TensorRT to reduce inference time for mobile deployment. Third, I would extend the frequency stream to detect artifacts from diffusion-model generators like Stable Diffusion and Sora, since these leave different spectral signatures than GANs."</div></div>
+
+<!-- SECTION 12 -->
+<h2 id="s12">12. Evaluation Rubric — How to Score Full Marks</h2>
+<table>
+  <tr><th>Criteria (Review-01)</th><th>Marks</th><th>How to Score Full Marks</th></tr>
+  <tr><td>Problem Identification & Objective</td><td>10</td><td>Clearly state spatial-only limitation. Present all 6 objectives. Mention FaceForensics++ and Celeb-DF as benchmarks.</td></tr>
+  <tr><td>Literature Review</td><td>10</td><td>Reference Rossler, Frank, Qian, Afchar, Li, Tan, Selvaraju, Durall. Explain what each paper found AND its limitation.</td></tr>
+  <tr><td>Proposed Methodology</td><td>10</td><td>Explain dual-stream pipeline step-by-step. Show DCT formula. Show fusion formula. Draw architecture diagram on whiteboard if asked.</td></tr>
+  <tr><td>Tools & Technologies</td><td>10</td><td>List PyTorch, timm, SciPy, OpenCV, MTCNN, Streamlit, Plotly, GitHub. Explain why each was chosen specifically.</td></tr>
+  <tr><td>Presentation & Response to Queries</td><td>10</td><td>Use the 11-slide HTML presentation. Answer every question confidently using the viva Q&A above.</td></tr>
+</table>
+<table>
+  <tr><th>Criteria (Review-02)</th><th>Marks</th><th>How to Score Full Marks</th></tr>
+  <tr><td>Project Progress</td><td>15</td><td>Show weekly log signed by Dr. Devendra Gautam. Show GitHub commit history. Show code is organized and modular.</td></tr>
+  <tr><td>Implementation / Working Demo</td><td>10</td><td>Run streamlit app.py LIVE. Upload real video → show REAL result. Upload fake video → show FAKE result. Generate Grad-CAM.</td></tr>
+  <tr><td>Technical Understanding</td><td>10</td><td>Use this guide. Answer questions using the viva Q&A section. Draw formulas if asked.</td></tr>
+  <tr><td>Presentation & Response to Queries</td><td>15</td><td>Navigate through all 11 slides confidently. Come prepared with formulas on a cheat sheet for quick reference.</td></tr>
+</table>
+
+<div class="alert alert-tip" style="margin-top: 32px;">🎯 <strong>Final Tips:</strong> Arrive 10 minutes early. Have the Streamlit app already running in the browser. Have your GitHub repo open in another tab. Have your synopsis printed. Carry your weekly log signed by your guide. Speak confidently — you built this system and know it inside out.</div>
+
+<p style="text-align:center; margin-top:48px; color:var(--dim);">DeepGuard AI | Dev Rana Kaila | Roll No. 2301531530023 | B.Tech CSE-AIML Sem VII | LIET, Greater Noida</p>
+</div>
+</body>
+</html>
