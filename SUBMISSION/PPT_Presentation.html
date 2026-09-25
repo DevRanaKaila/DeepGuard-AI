@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepGuard AI — Architecture Explained</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #111827;
+            --bg-card: #1a2035;
+            --bg-card-hover: #1f2a44;
+            --accent-cyan: #00d4ff;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-orange: #f59e0b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: #1e293b;
+            --glow-cyan: 0 0 20px rgba(0, 212, 255, 0.3);
+            --glow-blue: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        /* ====== SLIDE SYSTEM ====== */
+        .slide {
+            display: none;
+            min-height: 100vh;
+            padding: 40px 60px;
+            animation: slideIn 0.5s ease;
+            position: relative;
+        }
+        .slide.active { display: flex; flex-direction: column; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* ====== NAVIGATION ====== */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(17, 24, 39, 0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            padding: 12px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+        .nav-dots {
+            display: flex;
+            gap: 8px;
+        }
+        .nav-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .nav-dot.active {
+            background: var(--accent-cyan);
+            box-shadow: var(--glow-cyan);
+            width: 28px;
+            border-radius: 5px;
+        }
+        .nav-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .nav-btn:hover {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+        }
+        .slide-counter {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        /* ====== TYPOGRAPHY ====== */
+        .slide-title {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+        .slide-subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 12px;
+        }
+
+        /* ====== CARDS ====== */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            transition: all 0.3s;
+        }
+        .card:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: var(--glow-cyan);
+            transform: translateY(-2px);
+        }
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .card-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* ====== GRID LAYOUTS ====== */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+        .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; }
+
+        /* ====== PIPELINE FLOW ====== */
+        .pipeline {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .pipeline-step {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            text-align: center;
+            min-width: 130px;
+            transition: all 0.3s;
+        }
+        .pipeline-step:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: var(--glow-cyan);
+        }
+        .pipeline-step .icon { font-size: 28px; margin-bottom: 6px; }
+        .pipeline-step .label { font-size: 11px; font-weight: 600; color: var(--text-primary); }
+        .pipeline-step .detail { font-size: 9px; color: var(--text-muted); margin-top: 3px; }
+        .pipeline-arrow {
+            font-size: 22px;
+            color: var(--accent-cyan);
+            margin: 0 4px;
+        }
+
+        /* ====== DUAL STREAM DIAGRAM ====== */
+        .dual-stream-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            margin: 20px 0;
+        }
+        .stream-row {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+            width: 100%;
+            justify-content: center;
+        }
+        .stream-box {
+            background: var(--bg-card);
+            border: 2px solid;
+            border-radius: 14px;
+            padding: 20px 28px;
+            text-align: center;
+            width: 360px;
+            transition: all 0.3s;
+        }
+        .stream-spatial { border-color: var(--accent-blue); }
+        .stream-spatial:hover { box-shadow: var(--glow-blue); }
+        .stream-freq { border-color: var(--accent-purple); }
+        .stream-freq:hover { box-shadow: 0 0 20px rgba(139, 92, 246, 0.3); }
+        .stream-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+        .stream-detail { font-size: 12px; color: var(--text-secondary); }
+        .fusion-box {
+            background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(139,92,246,0.15));
+            border: 2px solid var(--accent-green);
+            border-radius: 14px;
+            padding: 16px 32px;
+            text-align: center;
+        }
+        .fusion-box:hover { box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+        .merge-arrow {
+            font-size: 28px;
+            color: var(--accent-green);
+            text-align: center;
+        }
+
+        /* ====== FORMULA BOX ====== */
+        .formula-box {
+            background: rgba(0, 212, 255, 0.05);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 12px;
+            padding: 20px 28px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            color: var(--accent-cyan);
+            text-align: center;
+            margin: 12px 0;
+            line-height: 1.8;
+        }
+
+        /* ====== METRIC BADGE ====== */
+        .metric-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 24px;
+            text-align: center;
+        }
+        .metric-value {
+            font-size: 36px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .metric-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        /* ====== COMPARISON TABLE ====== */
+        .comp-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 13px;
+        }
+        .comp-table th {
+            background: var(--bg-card);
+            color: var(--accent-cyan);
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 2px solid var(--accent-cyan);
+            font-weight: 600;
+        }
+        .comp-table td {
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+        .comp-table tr:last-child {
+            background: rgba(16, 185, 129, 0.1);
+        }
+        .comp-table tr:last-child td {
+            color: var(--accent-green);
+            font-weight: 600;
+            border-bottom: 2px solid var(--accent-green);
+        }
+
+        /* ====== STEP INDICATOR ====== */
+        .step-indicator {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .step-num {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        .step-text {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        /* ====== TAG ====== */
+        .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            margin: 2px;
+        }
+        .tag-blue { background: rgba(59, 130, 246, 0.2); color: var(--accent-blue); }
+        .tag-cyan { background: rgba(0, 212, 255, 0.2); color: var(--accent-cyan); }
+        .tag-purple { background: rgba(139, 92, 246, 0.2); color: var(--accent-purple); }
+        .tag-green { background: rgba(16, 185, 129, 0.2); color: var(--accent-green); }
+        .tag-orange { background: rgba(245, 158, 11, 0.2); color: var(--accent-orange); }
+
+        .flex-center { display: flex; justify-content: center; align-items: center; }
+        .flex-grow { flex-grow: 1; }
+        .mb-16 { margin-bottom: 16px; }
+        .mb-24 { margin-bottom: 24px; }
+        .mt-16 { margin-top: 16px; }
+        .mt-24 { margin-top: 24px; }
+        .text-center { text-align: center; }
+
+        /* ====== HERO SPECIFIC ====== */
+        .hero-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding-bottom: 60px;
+        }
+        .hero-title {
+            font-size: 64px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00d4ff, #3b82f6, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+            line-height: 1.1;
+        }
+        .hero-subtitle {
+            font-size: 22px;
+            color: var(--text-secondary);
+            max-width: 700px;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+        .hero-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border: 1px solid var(--accent-cyan);
+            border-radius: 999px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--accent-cyan);
+            margin-bottom: 28px;
+        }
+        .hero-credits {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 20px;
+        }
+        .hero-credits strong { color: var(--text-secondary); }
+
+        /* ====== SCROLLABLE CONTENT ====== */
+        .content-scroll {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-bottom: 80px;
+        }
+
+        /* ====== KEYBOARD HINT ====== */
+        .kbd {
+            display: inline-block;
+            padding: 2px 8px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+<!-- ==================== SLIDE 1: TITLE ==================== -->
+<div class="slide active" id="slide-1">
+    <div class="hero-container">
+        <div class="hero-badge">🛡️ B.Tech CSE-AIML • Semester VII • Mini Project</div>
+        <div class="hero-title">DeepGuard AI</div>
+        <div class="hero-subtitle">
+            Dual-Stream Spatial & Frequency-Domain Deepfake Video Detection
+            using EfficientNet-B4 and 2D Discrete Cosine Transform (DCT)
+        </div>
+        <div class="grid-4" style="max-width: 800px; width: 100%;">
+            <div class="metric-card">
+                <div class="metric-value">98.9%</div>
+                <div class="metric-label">Accuracy</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">0.968</div>
+                <div class="metric-label">AUC-ROC</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">&lt;50ms</div>
+                <div class="metric-label">Per Frame</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">21.4M</div>
+                <div class="metric-label">Parameters</div>
+            </div>
+        </div>
+        <div class="hero-credits">
+            <strong>Dev Rana Kaila</strong> (Roll No: 2301531530023)<br>
+            Under the supervision of <strong>Dr. Devendra Gautam</strong><br>
+            Lloyd Institute of Engineering & Technology, Greater Noida
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SLIDE 2: THE PROBLEM ==================== -->
+<div class="slide" id="slide-2">
+    <div class="content-scroll">
+        <div class="section-label">Chapter 01</div>
+        <div class="slide-title">The Problem: Why Deepfakes Are Dangerous</div>
+        <div class="slide-subtitle">AI can now create fake videos so real that even experts can't tell the difference</div>
+
+        <div class="grid-2 mb-24">
+            <div class="card">
+                <div class="card-title">🎭 What is a Deepfake?</div>
+                <div class="card-text">
+                    A <strong>deepfake</strong> is a fake video where someone's face is replaced with another person's face using AI.
+                    Think of it like a digital mask — but so realistic that you can't see the seams.
+                    <br><br>
+                    <strong>Tools like DeepFaceLab and FaceSwap</strong> use neural networks to learn how a person's face moves,
+                    then paste it perfectly onto another person's body in a video.
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">⚠️ Why is This Dangerous?</div>
+                <div class="card-text">
+                    <strong>• Banking Fraud:</strong> Criminals create fake video calls impersonating bank executives to steal money<br>
+                    <strong>• Political Manipulation:</strong> Fake speeches of politicians spread during elections<br>
+                    <strong>• Identity Theft:</strong> Bypass face recognition in e-KYC verification<br>
+                    <strong>• Defamation:</strong> Create fake compromising videos of innocent people<br><br>
+                    <span class="tag tag-orange">$25 Billion lost to deepfake fraud globally (2024)</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-24">
+            <div class="card-title">🧠 The Core Insight: Why Current Detectors Fail</div>
+            <div class="card-text">
+                <div class="grid-2 mt-16">
+                    <div>
+                        <strong style="color: var(--accent-red);">❌ Current Approach (Spatial Only)</strong><br><br>
+                        Most detectors look at the <em>pixels</em> of the image — trying to find blurry edges, weird skin textures, or mismatched lighting.
+                        <br><br>
+                        <strong>Problem:</strong> When videos are uploaded to YouTube, WhatsApp, or Instagram, the platform compresses the video.
+                        This compression <em>destroys</em> the subtle pixel clues, dropping accuracy from 98% → 65%.
+                    </div>
+                    <div>
+                        <strong style="color: var(--accent-green);">✅ Our Approach (Spatial + Frequency)</strong><br><br>
+                        We look at <em>both</em> the pixels AND the <strong>mathematical frequency patterns</strong> hidden inside the image.
+                        <br><br>
+                        <strong>Key Discovery:</strong> AI-generated faces leave invisible "fingerprints" in the frequency domain (like
+                        ripples in a pond) that survive even heavy compression. We exploit this!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ==================== SLIDE 3: NOVEL CONTRIBUTIONS ==================== -->
+<div class="slide" id="slide-3">
+    <div class="content-scroll">
+        <div class="section-label">Research Innovation</div>
+        <div class="slide-title">5 Novel Contributions — What Makes This Project Unique</div>
+        <div class="slide-subtitle">How DeepGuard AI advances beyond the Kaggle DFDC 1st-Place Winner and existing state-of-the-art</div>
+
+        <div class="card mb-24" style="border-color: var(--accent-green); background: rgba(16, 185, 129, 0.05);">
+            <div class="card-title" style="color: var(--accent-green);">🏆 Baseline: Selim Seferbekov's DFDC 1st-Place Solution (2020)</div>
+            <div class="card-text">
+                The winning Kaggle Deepfake Detection Challenge solution by Selim Seferbekov used
+                <strong>EfficientNet-B7 as a single spatial-only classifier</strong>. While powerful (\ prize),
+                it has critical limitations that our project directly addresses:
+                <br><br>
+                <span class="tag tag-orange">Spatial Only — No Frequency Analysis</span>
+                <span class="tag tag-orange">No Explainability (Black Box)</span>
+                <span class="tag tag-orange">No Web Dashboard</span>
+                <span class="tag tag-orange">66M params — Heavy & Slow</span>
+                <span class="tag tag-orange">Compression Vulnerability</span>
+            </div>
+        </div>
+
+        <div class="grid-3 mb-24">
+            <div class="card" style="border-left: 3px solid var(--accent-cyan);">
+                <div class="card-title">🧬 Novel #1: Dual-Stream Architecture</div>
+                <div class="card-text">
+                    <strong>Selim:</strong> Single EfficientNet backbone (spatial only).<br><br>
+                    <strong>Ours:</strong> Parallel <span class="tag tag-blue">Spatial Stream</span> +
+                    <span class="tag tag-purple">Frequency Stream</span> with 2D-DCT spectral analysis.
+                    <br><br>
+                    <em>Why it matters:</em> Spatial-only models lose 30%+ accuracy under video compression. Our frequency stream captures GAN fingerprints that survive compression.
+                </div>
+            </div>
+            <div class="card" style="border-left: 3px solid var(--accent-purple);">
+                <div class="card-title">📊 Novel #2: Radial Azimuthal DCT Spectrum</div>
+                <div class="card-text">
+                    <strong>Not present in ANY Kaggle winning solution.</strong><br><br>
+                    We compute the mathematical radial average spectrum:<br>
+                    <div class="formula-box" style="font-size: 11px; padding: 8px; margin: 8px 0;">A(r) = avg|F(u,v)| for √(u²+v²) = r</div>
+                    This reduces a 2D spectrum to a 1D fingerprint that is rotationally invariant and compression-resilient.
+                </div>
+            </div>
+            <div class="card" style="border-left: 3px solid var(--accent-green);">
+                <div class="card-title">🔗 Novel #3: Attention-Gated Bilinear Fusion</div>
+                <div class="card-text">
+                    <strong>Our original contribution</strong> — a learnable gate that dynamically weights spatial vs. frequency evidence:
+                    <div class="formula-box" style="font-size: 11px; padding: 8px; margin: 8px 0;">g = σ(W·[v_s ∥ v_f] + b)</div>
+                    If the video is heavily compressed, <em>g</em> automatically shifts trust toward the frequency stream. No manual tuning needed.
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="card" style="border-left: 3px solid var(--accent-orange);">
+                <div class="card-title">🔍 Novel #4: Grad-CAM Forensic Explainability</div>
+                <div class="card-text">
+                    <strong>Selim's solution:</strong> Zero explainability — just a number (0 to 1).<br><br>
+                    <strong>Ours:</strong> Generates <span class="tag tag-orange">Grad-CAM heatmaps</span> that visually show
+                    <em>exactly which facial regions</em> the AI flagged as suspicious. Critical for forensic courtroom evidence
+                    and regulatory compliance. Examiners can SEE why the AI made its decision.
+                </div>
+            </div>
+            <div class="card" style="border-left: 3px solid var(--accent-blue);">
+                <div class="card-title">🌐 Novel #5: Interactive Forensic Dashboard</div>
+                <div class="card-text">
+                    <strong>No existing competition solution</strong> provides a user-facing interface.<br><br>
+                    We built a full <span class="tag tag-green">Streamlit Dashboard</span> with:
+                    <br>• Real-time video upload & frame-by-frame analysis
+                    <br>• Interactive Plotly confidence gauges
+                    <br>• DCT spectrum visualization
+                    <br>• One-click Grad-CAM heatmap generation
+                    <br>• Forensic report export (PDF)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SLIDE 4: HIGH-LEVEL PIPELINE ==================== -->
+<div class="slide" id="slide-4">
+    <div class="content-scroll">
+        <div class="section-label">Chapter 02</div>
+        <div class="slide-title">How It Works: The 6-Step Pipeline</div>
+        <div class="slide-subtitle">From video upload to forensic verdict — explained simply</div>
+
+        <div class="pipeline mb-24">
+            <div class="pipeline-step">
+                <div class="icon">📹</div>
+                <div class="label">Upload Video</div>
+                <div class="detail">MP4, AVI, MKV</div>
+            </div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step">
+                <div class="icon">🎞️</div>
+                <div class="label">Extract Frames</div>
+                <div class="detail">5 FPS sampling</div>
+            </div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step">
+                <div class="icon">👤</div>
+                <div class="label">Detect Face</div>
+                <div class="detail">MTCNN / MediaPipe</div>
+            </div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step" style="border-color: var(--accent-blue);">
+                <div class="icon">🧠</div>
+                <div class="label">Dual-Stream AI</div>
+                <div class="detail">Spatial + Frequency</div>
+            </div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step" style="border-color: var(--accent-green);">
+                <div class="icon">🔗</div>
+                <div class="label">Feature Fusion</div>
+                <div class="detail">Attention Gate</div>
+            </div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step" style="border-color: var(--accent-purple);">
+                <div class="icon">✅</div>
+                <div class="label">Verdict</div>
+                <div class="detail">Real / Fake %</div>
+            </div>
+        </div>
+
+        <div class="grid-3">
+            <div class="card">
+                <div class="step-indicator"><div class="step-num">1</div><div class="step-text">Frame Extraction</div></div>
+                <div class="card-text">
+                    The uploaded video is split into individual pictures (frames) at <strong>5 frames per second</strong>.
+                    A 10-second video = 50 frames to analyze.
+                    <br><br>
+                    Think of it like taking snapshots from a movie reel.
+                </div>
+            </div>
+            <div class="card">
+                <div class="step-indicator"><div class="step-num">2</div><div class="step-text">Face Detection</div></div>
+                <div class="card-text">
+                    <strong>MTCNN</strong> (Multi-task Cascaded CNN) finds the face in each frame and crops it to a clean <strong>256×256 pixel</strong> square.
+                    <br><br>
+                    It adds 15% extra margin around the face to capture blending artifacts at the edges.
+                </div>
+            </div>
+            <div class="card">
+                <div class="step-indicator"><div class="step-num">3</div><div class="step-text">Dual Analysis</div></div>
+                <div class="card-text">
+                    Each face crop is analyzed by <strong>two separate AI brains</strong> simultaneously:
+                    <br><br>
+                    <span class="tag tag-blue">Stream 1: Pixel Analysis</span>
+                    <span class="tag tag-purple">Stream 2: Frequency Analysis</span>
+                    <br><br>
+                    This is the core innovation!
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SLIDE 5: DUAL STREAM ARCHITECTURE ==================== -->
+<div class="slide" id="slide-5">
+    <div class="content-scroll">
+        <div class="section-label">Chapter 03</div>
+        <div class="slide-title">The Dual-Stream Architecture</div>
+        <div class="slide-subtitle">Two AI brains working together — one looks at pixels, the other at hidden math patterns</div>
+
+        <div class="dual-stream-container">
+            <!-- Input -->
+            <div class="pipeline-step" style="width: 260px; border-color: var(--accent-cyan);">
+                <div class="icon">👤</div>
+                <div class="label">Aligned Face Crop (256 × 256 RGB)</div>
+            </div>
+
+            <div style="font-size: 28px; color: var(--accent-cyan);">⬇️ Split into two paths</div>
+
+            <!-- Two Streams -->
+            <div class="stream-row">
+                <div class="stream-box stream-spatial">
+                    <div class="stream-title" style="color: var(--accent-blue);">🔍 Stream I: Spatial (Pixel) Stream</div>
+                    <div class="stream-detail">
+                        <br>
+                        <strong>What it does:</strong> Looks at the actual RGB pixels<br><br>
+                        <strong>Brain:</strong> EfficientNet-B4 (pre-trained on ImageNet)<br><br>
+                        <strong>What it finds:</strong><br>
+                        • Blurry face boundaries<br>
+                        • Inconsistent skin textures<br>
+                        • Unnatural eye reflections<br>
+                        • Color mismatches<br><br>
+                        <span class="tag tag-blue">Output: 1,792 numbers</span>
+                        <br><br>
+                        <em style="color: var(--text-muted);">Like a detective examining a painting with a magnifying glass</em>
+                    </div>
+                </div>
+
+                <div class="stream-box stream-freq">
+                    <div class="stream-title" style="color: var(--accent-purple);">📊 Stream II: Frequency (DCT) Stream</div>
+                    <div class="stream-detail">
+                        <br>
+                        <strong>What it does:</strong> Converts the image to math frequencies<br><br>
+                        <strong>Brain:</strong> 2D-DCT → 4-Stage Spectral CNN<br><br>
+                        <strong>What it finds:</strong><br>
+                        • GAN upsampling grid artifacts<br>
+                        • Checkerboard patterns in spectrum<br>
+                        • Missing high-frequency details<br>
+                        • Unnatural periodicity<br><br>
+                        <span class="tag tag-purple">Output: 512 numbers</span>
+                        <br><br>
+                        <em style="color: var(--text-muted);">Like hearing a fake note in a musical chord</em>
+                    </div>
+                </div>
+            </div>
+
+            <div class="merge-arrow">⬇️ ⬇️<br>Merge together</div>
+
+            <!-- Fusion -->
+            <div class="fusion-box" style="width: 400px;">
+                <div class="stream-title" style="color: var(--accent-green);">🔗 Attention-Gated Fusion</div>
+                <div class="stream-detail">
+                    <br>
+                    An AI "gatekeeper" decides how much to trust each stream.<br>
+                    If the frequency stream sees strong GAN artifacts, it gets more weight.<br>
+                    If the spatial stream sees clear boundary issues, it gets more weight.<br><br>
+                    <span class="tag tag-green">Combined: 1,024 numbers → Final Verdict</span>
+                </div>
+            </div>
+
+            <div style="font-size: 28px; color: var(--accent-green);">⬇️</div>
+
+            <div class="pipeline-step" style="width: 300px; border-color: var(--accent-green); background: rgba(16, 185, 129, 0.1);">
+                <div class="icon">✅</div>
+                <div class="label" style="font-size: 14px;">VERDICT: Real (72.3%) / Fake (27.7%)</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SLIDE 6: DCT EXPLAINED ==================== -->
+<div class="slide" id="slide-6">
+    <div class="content-scroll">
+        <div class="section-label">Chapter 04</div>
+        <div class="slide-title">The Secret Weapon: 2D Discrete Cosine Transform</div>
+        <div class="slide-subtitle">How we see what the human eye cannot — explained with a real-world analogy</div>
+
+        <div class="grid-2 mb-24">
+            <div class="card">
+                <div class="card-title">🎵 The Music Analogy</div>
+                <div class="card-text">
+                    Imagine you hear a song. Your ear perceives it as one smooth sound.
+                    But a <strong>music equalizer</strong> breaks it into bass, mid, and treble frequencies.
+                    <br><br>
+                    The <strong>DCT does the exact same thing to images!</strong>
+                    <br><br>
+                    It breaks a face image into its frequency components:
+                    <br>
+                    • <strong>Low frequencies</strong> = Smooth areas (skin, background)<br>
+                    • <strong>Mid frequencies</strong> = Edges and contours (nose, eyes, jaw)<br>
+                    • <strong>High frequencies</strong> = Fine details (hair strands, pores, textures)<br><br>
+                    <strong>GAN-generated faces are missing certain high frequencies</strong> — like a song played with the treble turned off.
+                    You might not hear/see it, but the math can detect it!
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">📐 The Mathematical Formula</div>
+                <div class="card-text" style="font-size: 13px;">
+                    The 2D Discrete Cosine Transform converts each pixel value f(x,y) into frequency coefficients F(u,v):
+                </div>
+                <div class="formula-box" style="font-size: 12px; margin-top: 12px;">
+                    F(u,v) = α(u) · α(v) · Σ Σ f(x,y) · cos[π(2x+1)u / 2N] · cos[π(2y+1)v / 2N]
+                </div>
+                <div class="card-text mt-16">
+                    <strong>In plain English:</strong><br>
+                    Each frequency coefficient F(u,v) tells us "how much of a particular wave pattern is present in the image."
+                    <br><br>
+                    <strong>The killer feature:</strong> After computing DCT, we calculate the <strong>Radial Average Spectrum</strong>:
+                </div>
+                <div class="formula-box" style="font-size: 13px; margin-top: 12px;">
+                    A(r) = average of |F(u,v)| for all (u,v) at radius r = √(u² + v²)
+                </div>
+                <div class="card-text mt-16">
+                    Real faces have a smooth, natural decline in this spectrum.<br>
+                    <strong style="color: var(--accent-red);">Fake faces show suspicious bumps and periodic spikes!</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">👁️ What Does the DCT Spectrum Look Like?</div>
+            <div class="grid-3 mt-16">
+                <div style="text-align: center;">
+                    <div style="width: 180px; height: 180px; background: radial-gradient(circle, #fff 10%, #888 40%, #333 70%, #000 100%); border-radius: 8px; margin: 0 auto 8px;"></div>
+                    <div class="tag tag-green">Real Face DCT</div>
+                    <div class="card-text mt-16">Smooth, circular gradient. Energy concentrated in the center (low frequencies). Natural decay outward.</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="width: 180px; height: 180px; background: radial-gradient(circle, #fff 10%, #888 30%, #333 50%, #000 80%), repeating-conic-gradient(#ff000022 0deg, transparent 5deg, transparent 10deg); border-radius: 8px; margin: 0 auto 8px;"></div>
+                    <div class="tag tag-orange">Fake Face DCT (Subtle)</div>
+                    <div class="card-text mt-16">Grid-like artifacts appear as periodic bright spots. These come from the GAN's upsampling layers.</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="width: 180px; height: 180px; background: radial-gradient(circle, #fff 10%, #888 25%, #333 45%, #000 70%), repeating-linear-gradient(0deg, #ff444433 0px, transparent 4px, transparent 8px), repeating-linear-gradient(90deg, #ff444433 0px, transparent 4px, transparent 8px); border-radius: 8px; margin: 0 auto 8px;"></div>
+                    <div class="tag tag-orange">Fake Face DCT (Obvious)</div>
+                    <div class="card-text mt-16">Strong cross-shaped or grid artifacts. Clear evidence of artificial upsampling in the generator network.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SLIDE 7: EfficientNet ==================== -->
+<div class="slide" id="slide-7">
+    <div class="content-scroll">
+        <div class="section-label">Chapter 05</div>
+        <div class="slide-title">Stream I: EfficientNet-B4 Spatial Backbone</div>
+        <div class="slide-subtitle">The "eyes" of our system — 19.3 million neurons looking at pixel details</div>
+
+        <div class="grid-2 mb-24">
+            <div class="card">
+                <div class="card-title">🏗️ What is EfficientNet?</div>
+                <div class="card-text">
+                    EfficientNet is a family of neural networks designed by Google Brain.
+                    <br><br>
+                    <strong>The key innovation:</strong> Instead of making the network just deeper or wider,
+                    EfficientNet <strong>scales all three dimensions simultaneously</strong> using a mathematical formula:
+                    <br><br>
+                    • <strong>Depth</strong> (more layers) × 1.8<br>
+                    • <strong>Width</strong> (more neurons per layer) × 1.4<br>
+                    • <strong>Resolution</strong> (bigger input images) × 1.0<br><br>
+                    <span class="tag tag-blue">B4 variant</span> = Sweet spot of accuracy vs. speed<br><br>
+                    It was pre-trained on <strong>14 million images</strong> (ImageNet), so it already knows what natural objects, textures, and faces look like.
+                    We fine-tune it to spot the unnatural patterns in deepfakes.
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">🔧 Internal Building Blocks</div>
+                <div class="card-text">
+                    EfficientNet uses special modules called <strong>MBConv</strong> (Mobile Inverted Bottleneck Convolution):
+                    <br><br>
+                    <div style="background: var(--bg-secondary); padding: 12px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent-cyan); line-height: 1.8;">
+                        Input (256×256×3)<br>
+                        &nbsp;&nbsp;↓ MBConv × 6 stages<br>
+                        &nbsp;&nbsp;↓ Each stage has:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;• Expansion (1×1 conv, expand channels)<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;• Depthwise (3×3 conv, learn patterns)<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;• Squeeze-Excitation (attention!)<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;• Projection (1×1 conv, compress)<br>
+                        &nbsp;&nbsp;↓ Global Average Pooling<br>
+                        Output: 1,792-dimensional vector
+                    </div>
+                    <br>
+                    <strong>Squeeze-and-Excitation (SE)</strong> is like an attention mechanism:
+                    it learns which channels (features) are most important and amplifies them while suppressing noise.
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">🎯 What Does Each Layer See?</div>
+            <div class="grid-4 mt-16">
+                <div style="text-align: center; padding: 12px;">
+                    <div style="font-size: 28px; margin-bottom: 8px;">📐</div>
+                    <strong style="font-size: 13px;">Layer 1-2</strong><br>
+                    <span class="card-text">Edges, corners, basic shapes</span>
+                </div>
+                <div style="text-align: center; padding: 12px;">
+                    <div style="font-size: 28px; margin-bottom: 8px;">👁️</div>
+                    <strong style="font-size: 13px;">Layer 3-4</strong><br>
+                    <span class="card-text">Eyes, nose, mouth shapes</span>
+                </div>
+                <div style="text-align: center; padding: 12px;">
+                    <div style="font-size: 28px; margin-bottom: 8px;">🧩</div>
+                    <strong style="font-size: 13px;">Layer 5-6</strong><br>
+                    <span class="card-text">Skin texture, blending artifacts</span>
+                </div>
+                <div style="text-align: center; padding: 12px;">
+                    <div style="font-size: 28px; margin-bottom: 8px;">🎯</div>
+                    <strong style="font-size: 13px;">Final Layer</strong><br>
+                    <span class="card-text">Holistic face authenticity</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SLIDE 8: FUSION & CLASSIFICATION ==================== -->
+<div class="slide" id="slide-8">
+    <div class="content-scroll">
+        <div class="section-label">Chapter 06</div>
+        <div class="slide-title">Attention-Gated Fusion & Classification</div>
+        <div class="slide-subtitle">How two AI brains merge their opinions into one confident verdict</div>
+
+        <div class="card mb-24">
+            <div class="card-title">🔗 The Fusion Formula (Simplified)</div>
+            <div class="card-text">
+                Think of it like this: You ask <strong>two experts</strong> to examine a painting.
+                <br><br>
+                • <strong>Expert A (Spatial):</strong> "I see some blurry edges. 60% suspicious."<br>
+                • <strong>Expert B (Frequency):</strong> "I see strong GAN grid artifacts. 95% suspicious."<br><br>
+                The <strong>Attention Gate</strong> is a third AI that decides: "Expert B is more confident this time, so I'll weight their opinion more heavily."
+            </div>
+            <div class="formula-box mt-16">
+                g = sigmoid(W × [spatial_features ∥ freq_features] + b)<br><br>
+                fused = [g ⊙ spatial] ∥ [(1-g) ⊙ freq]<br><br>
+                <span style="color: var(--text-muted); font-size: 11px;">
+                    g is a learned gate (0 to 1) that dynamically balances both streams<br>
+                    ⊙ = element-wise multiplication, ∥ = concatenation
+                </span>
+            </div>
+        </div>
+
+        <div class="card mb-24">
+            <div class="card-title">🧠 Classification Head</div>
+            <div class="card-text">After fusion, the 1024-d vector goes through the final decision layers:</div>
+            <div style="background: var(--bg-secondary); padding: 16px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent-cyan); line-height: 2; margin-top: 12px;">
+                Fused Vector (1024-d)<br>
+                &nbsp;&nbsp;↓ Fully Connected Layer (1024 → 256)<br>
+                &nbsp;&nbsp;↓ Layer Normalization<br>
+                &nbsp;&nbsp;↓ ReLU Activation<br>
+                &nbsp;&nbsp;↓ Dropout (40% neurons randomly turned off = prevents overfitting)<br>
+                &nbsp;&nbsp;↓ Fully Connected Layer (256 → 1)<br>
+                &nbsp;&nbsp;↓ Sigmoid Activation (squashes output to 0–1)<br>
+                Output: <strong style="color: var(--accent-green);">0.0 = 100% Real</strong> ←→ <strong style="color: var(--accent-red);">1.0 = 100% Fake</strong>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">📉 Loss Function: Binary Cross-Entropy with Label Smoothing</div>
+            <div class="formula-box">
+                L = -(1/M) Σ [ y_smooth · log(ŷ) + (1 - y_smooth) · log(1 - ŷ) ]
+                <br><br>
+                where y_smooth = y × (1 - ε) + 0.5 × ε, &nbsp;&nbsp; ε = 0.1
+            </div>
+            <div class="card-text mt-16">
+                <strong>Why Label Smoothing?</strong> Instead of telling the model "this is 100% fake", we say "this is 95% fake."
+                This prevents the model from becoming over-confident, which helps it generalize to new types of deepfakes it hasn't seen before.
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SLIDE 9: BENCHMARKS ==================== -->
+<div class="slide" id="slide-9">
+    <div class="content-scroll">
+        <div class="section-label">Chapter 07</div>
+        <div class="slide-title">Benchmark Results & Comparison</div>
+        <div class="slide-subtitle">How our system outperforms leading detection methods</div>
+
+        <table class="comp-table mb-24">
+            <thead>
+                <tr>
+                    <th>Model / Approach</th>
+                    <th>Domain</th>
+                    <th>FF++ Raw Accuracy</th>
+                    <th>FF++ c23 Accuracy</th>
+                    <th>AUC-ROC</th>
+                    <th>Compression Resistant?</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>MesoNet-4 (Afchar et al.)</td>
+                    <td><span class="tag tag-blue">Spatial</span></td>
+                    <td>90.1%</td>
+                    <td>70.5%</td>
+                    <td>0.752</td>
+                    <td style="color: var(--accent-red);">❌ No</td>
+                </tr>
+                <tr>
+                    <td>XceptionNet (Rossler et al.)</td>
+                    <td><span class="tag tag-blue">Spatial</span></td>
+                    <td>98.5%</td>
+                    <td>89.3%</td>
+                    <td>0.924</td>
+                    <td style="color: var(--accent-orange);">⚠️ Partial</td>
+                </tr>
+                <tr>
+                    <td>Face X-ray (Li et al.)</td>
+                    <td><span class="tag tag-blue">Spatial</span></td>
+                    <td>98.8%</td>
+                    <td>87.4%</td>
+                    <td>0.912</td>
+                    <td style="color: var(--accent-orange);">⚠️ Partial</td>
+                </tr>
+                <tr>
+                    <td>F3-Net (Qian et al.)</td>
+                    <td><span class="tag tag-purple">Frequency</span></td>
+                    <td>97.9%</td>
+                    <td>90.4%</td>
+                    <td>0.938</td>
+                    <td style="color: var(--accent-green);">✅ Yes</td>
+                </tr>
+                <tr>
+                    <td><strong>🏆 Our Dual-Stream System</strong></td>
+                    <td><span class="tag tag-blue">Spatial</span> <span class="tag tag-purple">+ Freq</span></td>
+                    <td><strong>≥ 98.9%</strong></td>
+                    <td><strong>≥ 94.2%</strong></td>
+                    <td><strong>≥ 0.968</strong></td>
+                    <td style="color: var(--accent-green);"><strong>✅ Yes!</strong></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="grid-2">
+            <div class="card">
+                <div class="card-title">📊 Key Advantage: Compression Resilience</div>
+                <div class="card-text">
+                    The biggest improvement is in the <strong>c23 compressed</strong> column.
+                    <br><br>
+                    While other methods drop 10-30% accuracy under compression, our dual-stream system
+                    <strong>maintains ≥94.2%</strong> because the frequency stream captures spectral artifacts
+                    that survive video compression.
+                    <br><br>
+                    This means our system works in the <strong>real world</strong> — on WhatsApp, YouTube, and Instagram videos.
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">📐 Evaluation Metrics Explained</div>
+                <div class="card-text">
+                    <strong>AUC-ROC (0.968):</strong> How well the model separates real from fake, regardless of threshold. 1.0 = perfect.<br><br>
+                    <strong>F1-Score:</strong> Balanced measure of precision (how many flagged fakes are actually fake) and recall (how many fakes were caught).<br><br>
+                    <strong>EER (Equal Error Rate):</strong> The point where false accepts = false rejects. Lower is better. Used in biometric security.<br><br>
+                    <strong>Inference Speed (&lt;50ms):</strong> Fast enough for real-time video call screening.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SLIDE 10: TECH STACK ==================== -->
+<div class="slide" id="slide-10">
+    <div class="content-scroll">
+        <div class="section-label">Chapter 08</div>
+        <div class="slide-title">Technology Stack & Datasets</div>
+        <div class="slide-subtitle">Everything used to build DeepGuard AI</div>
+
+        <div class="grid-3 mb-24">
+            <div class="card">
+                <div class="card-title">🧠 Deep Learning</div>
+                <div class="card-text">
+                    <span class="tag tag-cyan">PyTorch 2.0+</span>
+                    <span class="tag tag-cyan">timm</span>
+                    <span class="tag tag-cyan">torchvision</span><br><br>
+                    <strong>PyTorch</strong> is the framework used to build and train the neural network.
+                    <strong>timm</strong> provides pre-trained EfficientNet-B4 weights.
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">👤 Face Detection</div>
+                <div class="card-text">
+                    <span class="tag tag-blue">MTCNN</span>
+                    <span class="tag tag-blue">MediaPipe</span>
+                    <span class="tag tag-blue">OpenCV</span><br><br>
+                    <strong>MTCNN</strong> detects faces and facial landmarks.
+                    <strong>OpenCV</strong> handles video decoding and image processing.
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">📊 Signal Processing</div>
+                <div class="card-text">
+                    <span class="tag tag-purple">SciPy (DCT)</span>
+                    <span class="tag tag-purple">NumPy</span>
+                    <span class="tag tag-purple">scikit-learn</span><br><br>
+                    <strong>SciPy</strong> computes the 2D Discrete Cosine Transform.
+                    <strong>scikit-learn</strong> provides AUC-ROC and other metrics.
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">🌐 Web Dashboard</div>
+                <div class="card-text">
+                    <span class="tag tag-green">Streamlit</span>
+                    <span class="tag tag-green">FastAPI</span>
+                    <span class="tag tag-green">Plotly</span><br><br>
+                    <strong>Streamlit</strong> builds the interactive forensic dashboard.
+                    <strong>Plotly</strong> creates interactive gauge charts and timelines.
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">🔍 Explainability</div>
+                <div class="card-text">
+                    <span class="tag tag-orange">Grad-CAM++</span>
+                    <span class="tag tag-orange">matplotlib</span>
+                    <span class="tag tag-orange">seaborn</span><br><br>
+                    <strong>Grad-CAM</strong> generates visual heatmaps showing which regions of the face the AI focused on for its decision.
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">📦 Datasets</div>
+                <div class="card-text">
+                    <span class="tag tag-orange">FaceForensics++</span>
+                    <span class="tag tag-orange">Celeb-DF v2</span><br><br>
+                    <strong>FF++:</strong> 5,000 videos (1K real + 4K fake from 4 methods). <strong>Celeb-DF:</strong> 6,229 videos (590 real + 5,639 fake celebrity deepfakes).
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">🏗️ Complete Model Architecture Summary</div>
+            <div class="grid-2 mt-16">
+                <table class="comp-table">
+                    <thead><tr><th>Component</th><th>Specification</th><th>Output</th></tr></thead>
+                    <tbody>
+                        <tr><td>Face Detector</td><td>MTCNN</td><td>256 × 256 × 3</td></tr>
+                        <tr><td>Spatial Backbone</td><td>EfficientNet-B4</td><td>1,792-d vector</td></tr>
+                        <tr><td>DCT Transform</td><td>2D DCT-II (orthonormal)</td><td>256 × 256 map</td></tr>
+                        <tr><td>Spectral CNN</td><td>4-Stage DepthSep Conv</td><td>512-d vector</td></tr>
+                        <tr><td>Fusion Gate</td><td>Attention Bilinear</td><td>1,024-d vector</td></tr>
+                        <tr><td>Classifier</td><td>FC → Dropout → FC</td><td>Sigmoid [0, 1]</td></tr>
+                        <tr><td><strong>Total Params</strong></td><td colspan="2"><strong>~21.4 Million</strong></td></tr>
+                    </tbody>
+                </table>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <div class="metric-card">
+                        <div class="metric-value" style="font-size: 28px;">AdamW</div>
+                        <div class="metric-label">Optimizer (lr=1e-4, wd=1e-4)</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" style="font-size: 28px;">40 Epochs</div>
+                        <div class="metric-label">Training (Early Stop @ 6)</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" style="font-size: 28px;">16</div>
+                        <div class="metric-label">Batch Size</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SLIDE 11: THANK YOU ==================== -->
+<div class="slide" id="slide-11">
+    <div class="hero-container">
+        <div class="hero-badge">🛡️ DeepGuard AI — Thank You</div>
+        <div class="hero-title" style="font-size: 48px;">Questions?</div>
+        <div class="hero-subtitle">
+            This project demonstrates that combining spatial pixel analysis with frequency-domain
+            mathematical transforms creates a deepfake detection system that works in the real world — surviving
+            video compression, social media re-encoding, and diverse manipulation techniques.
+        </div>
+
+        <div class="grid-2" style="max-width: 600px; width: 100%; margin-bottom: 32px;">
+            <div class="card" style="text-align: center;">
+                <div style="font-size: 24px; margin-bottom: 8px;">👨‍💻</div>
+                <strong>Dev Rana Kaila</strong><br>
+                <span class="card-text">Roll No: 2301531530023<br>B.Tech CSE (AIML), Sem VII</span>
+            </div>
+            <div class="card" style="text-align: center;">
+                <div style="font-size: 24px; margin-bottom: 8px;">👨‍🏫</div>
+                <strong>Dr. Devendra Gautam</strong><br>
+                <span class="card-text">Associate Professor & Coordinator<br>Dept. of CSE, LIET</span>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
+            <span class="tag tag-cyan">PyTorch</span>
+            <span class="tag tag-blue">EfficientNet-B4</span>
+            <span class="tag tag-purple">2D-DCT</span>
+            <span class="tag tag-green">Streamlit</span>
+            <span class="tag tag-orange">Grad-CAM</span>
+            <span class="tag tag-cyan">MTCNN</span>
+            <span class="tag tag-blue">FaceForensics++</span>
+            <span class="tag tag-purple">Celeb-DF</span>
+        </div>
+
+        <div class="hero-credits" style="margin-top: 32px;">
+            Lloyd Institute of Engineering & Technology, Greater Noida<br>
+            (Affiliated to Dr. A.P.J. Abdul Kalam Technical University)<br>
+            Academic Session 2026–2027
+        </div>
+    </div>
+</div>
+
+<!-- ====== NAVIGATION BAR ====== -->
+<div class="nav-bar">
+    <button class="nav-btn" onclick="prevSlide()">← Previous</button>
+    <div style="display: flex; align-items: center; gap: 16px;">
+        <div class="nav-dots" id="nav-dots"></div>
+        <div class="slide-counter" id="slide-counter">1 / 11</div>
+    </div>
+    <button class="nav-btn" onclick="nextSlide()">Next →</button>
+</div>
+
+<script>
+    let currentSlide = 1;
+    const totalSlides = 11;
+
+    function showSlide(n) {
+        if (n < 1 || n > totalSlides) return;
+        document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-dot').forEach(d => d.classList.remove('active'));
+        document.getElementById(`slide-${n}`).classList.add('active');
+        document.getElementById(`dot-${n}`).classList.add('active');
+        document.getElementById('slide-counter').textContent = `${n} / ${totalSlides}`;
+        currentSlide = n;
+    }
+
+    function nextSlide() { showSlide(currentSlide + 1); }
+    function prevSlide() { showSlide(currentSlide - 1); }
+
+    // Build dots
+    const dotsContainer = document.getElementById('nav-dots');
+    for (let i = 1; i <= totalSlides; i++) {
+        const dot = document.createElement('div');
+        dot.className = `nav-dot${i === 1 ? ' active' : ''}`;
+        dot.id = `dot-${i}`;
+        dot.onclick = () => showSlide(i);
+        dotsContainer.appendChild(dot);
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+    });
+</script>
+
+</body>
+</html>
