@@ -1,5 +1,10 @@
-import os
-import sys
+import os
+import sys
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
+
 import docx
 from docx.shared import Inches, Pt, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -87,31 +92,12 @@ def main():
     hrun.font.italic = True
     hrun.font.color.rgb = RGBColor(113, 128, 150)
 
-    # FOOTER: Center-aligned Department Name + Right-aligned Page Number
-    tbl = s2.footer.add_table(1, 3, Inches(5.77))
-    tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
-    for r in tbl.rows:
-        for cell in r.cells:
-            set_cell_margins(cell, top=60, bottom=60, left=40, right=40)
-            set_cell_borders(cell, top="none", bottom="none", left="none", right="none")
-
-    c0, c1, c2 = tbl.rows[0].cells
-    c0.width = Inches(1.0)
-    c1.width = Inches(3.77)
-    c2.width = Inches(1.0)
-
-    p_dept = c1.paragraphs[0]
-    p_dept.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r_dept = p_dept.add_run("LIET, Greater Noida — Dept. of CSE (AIML)")
-    r_dept.font.name = 'Times New Roman'
-    r_dept.font.size = Pt(9)
-    r_dept.font.color.rgb = RGBColor(113, 128, 150)
-
-    p_num = c2.paragraphs[0]
-    p_num.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-    r_num = p_num.add_run()
+    # FOOTER: Center-aligned page number ONLY (No institutional text)
+    p_footer = s2.footer.paragraphs[0]
+    p_footer.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r_num = p_footer.add_run()
     r_num.font.name = 'Times New Roman'
-    r_num.font.size = Pt(9.5)
+    r_num.font.size = Pt(10)
     r_num.font.color.rgb = RGBColor(45, 55, 72)
     fldChar1 = parse_xml(f'<w:fldChar {nsdecls("w")} w:fldCharType="begin"/>')
     instrText = parse_xml(f'<w:instrText {nsdecls("w")} xml:space="preserve"> PAGE </w:instrText>')

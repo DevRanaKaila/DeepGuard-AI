@@ -2,35 +2,48 @@ import docx
 from docx.shared import Inches, Pt, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT
+from docx.oxml import parse_xml
+from docx.oxml.ns import nsdecls
 from build_report.helpers import (
     COLOR_PRIMARY, COLOR_SECONDARY, COLOR_DARK, COLOR_MUTED,
     set_cell_margins, set_cell_shading, set_cell_borders,
     add_heading_1, add_heading_2, add_heading_3, add_body_p, add_bullet_p, add_table_custom
 )
 
+def add_gold_divider(doc):
+    p = doc.add_paragraph()
+    p.paragraph_format.space_before = Pt(4)
+    p.paragraph_format.space_after = Pt(8)
+    pPr = p._p.get_or_add_pPr()
+    pBdr = parse_xml(f'<w:pBdr {nsdecls("w")}><w:bottom w:val="single" w:sz="12" w:space="1" w:color="B8860B"/></w:pBdr>')
+    pPr.append(pBdr)
+
 def add_cover_page(doc):
-    # Title
+    # Top Title
     p_title = doc.add_paragraph()
-    p_title.paragraph_format.space_before = Pt(0)
-    p_title.paragraph_format.space_after = Pt(12)
+    p_title.paragraph_format.space_before = Pt(12)
+    p_title.paragraph_format.space_after = Pt(6)
     p_title.paragraph_format.line_spacing = 1.15
     p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
     r_title = p_title.add_run("DUAL-STREAM SPATIAL AND FREQUENCY-DOMAIN DEEPFAKE VIDEO DETECTION USING EFFICIENTNET-B4 AND DISCRETE COSINE TRANSFORM (DCT)")
     r_title.font.name = 'Times New Roman'
-    r_title.font.size = Pt(15)
+    r_title.font.size = Pt(13.5)
     r_title.font.bold = True
-    r_title.font.color.rgb = COLOR_PRIMARY
+    r_title.font.color.rgb = RGBColor(0, 0, 0)
 
-    # Mini Project Report
+    # Top Gold Divider Line
+    add_gold_divider(doc)
+
+    # Subtitle: MINI PROJECT REPORT
     p_sub = doc.add_paragraph()
-    p_sub.paragraph_format.space_before = Pt(6)
-    p_sub.paragraph_format.space_after = Pt(8)
+    p_sub.paragraph_format.space_before = Pt(8)
+    p_sub.paragraph_format.space_after = Pt(10)
     p_sub.alignment = WD_ALIGN_PARAGRAPH.CENTER
     r_sub = p_sub.add_run("MINI PROJECT REPORT")
     r_sub.font.name = 'Times New Roman'
-    r_sub.font.size = Pt(18)
+    r_sub.font.size = Pt(17)
     r_sub.font.bold = True
-    r_sub.font.color.rgb = RGBColor(180, 20, 20)
+    r_sub.font.color.rgb = RGBColor(26, 54, 93) # Deep Navy
 
     # Fulfillment text
     p_ful = doc.add_paragraph()
@@ -39,7 +52,8 @@ def add_cover_page(doc):
     p_ful.alignment = WD_ALIGN_PARAGRAPH.CENTER
     r_ful = p_ful.add_run("Submitted in partial fulfilment of the requirement for the award of the degree of")
     r_ful.font.name = 'Times New Roman'
-    r_ful.font.size = Pt(11)
+    r_ful.font.size = Pt(10)
+    r_ful.font.italic = True
 
     p_deg = doc.add_paragraph()
     p_deg.paragraph_format.space_before = Pt(2)
@@ -49,6 +63,7 @@ def add_cover_page(doc):
     r_deg.font.name = 'Times New Roman'
     r_deg.font.size = Pt(13)
     r_deg.font.bold = True
+    r_deg.font.color.rgb = RGBColor(139, 0, 0) # Dark Red / Maroon
 
     p_in = doc.add_paragraph()
     p_in.paragraph_format.space_before = Pt(0)
@@ -56,131 +71,115 @@ def add_cover_page(doc):
     p_in.alignment = WD_ALIGN_PARAGRAPH.CENTER
     r_in = p_in.add_run("in")
     r_in.font.name = 'Times New Roman'
-    r_in.font.size = Pt(11)
+    r_in.font.size = Pt(10.5)
 
     p_br = doc.add_paragraph()
     p_br.paragraph_format.space_before = Pt(0)
     p_br.paragraph_format.space_after = Pt(8)
     p_br.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r_br = p_br.add_run("Computer Science & Engineering · AI & ML")
+    r_br = p_br.add_run("Computer Science & Engineering (AIML)")
     r_br.font.name = 'Times New Roman'
     r_br.font.size = Pt(12)
     r_br.font.bold = True
+    r_br.font.color.rgb = RGBColor(139, 0, 0) # Dark Red / Maroon
 
     p_to = doc.add_paragraph()
-    p_to.paragraph_format.space_before = Pt(2)
+    p_to.paragraph_format.space_before = Pt(4)
     p_to.paragraph_format.space_after = Pt(2)
     p_to.alignment = WD_ALIGN_PARAGRAPH.CENTER
     r_to = p_to.add_run("Submitted to")
     r_to.font.name = 'Times New Roman'
     r_to.font.size = Pt(10)
-    r_to.font.italic = True
 
     p_univ = doc.add_paragraph()
     p_univ.paragraph_format.space_before = Pt(0)
     p_univ.paragraph_format.space_after = Pt(10)
     p_univ.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r_univ = p_univ.add_run("DR. A.P.J. ABDUL KALAM TECHNICAL UNIVERSITY,\nUTTAR PRADESH, LUCKNOW")
+    r_univ = p_univ.add_run("DR. A.P.J. ABDUL KALAM TECHNICAL UNIVERSITY, UTTAR PRADESH, LUCKNOW")
     r_univ.font.name = 'Times New Roman'
-    r_univ.font.size = Pt(12)
+    r_univ.font.size = Pt(10.5)
     r_univ.font.bold = True
-    r_univ.font.color.rgb = COLOR_PRIMARY
+    r_univ.font.color.rgb = RGBColor(0, 0, 0)
 
-    # Logos Table
-    tbl_logo = doc.add_table(1, 2)
-    tbl_logo.alignment = WD_TABLE_ALIGNMENT.CENTER
-    cell_l0 = tbl_logo.rows[0].cells[0]
-    cell_l1 = tbl_logo.rows[0].cells[1]
-    cell_l0.width = Inches(2.8)
-    cell_l1.width = Inches(2.8)
-    set_cell_borders(cell_l0, "none", "none", "none", "none")
-    set_cell_borders(cell_l1, "none", "none", "none", "none")
-    
-    p_img1 = cell_l0.paragraphs[0]
-    p_img1.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    # AKTU Logo in Center
+    p_logo1 = doc.add_paragraph()
+    p_logo1.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p_logo1.paragraph_format.space_before = Pt(4)
+    p_logo1.paragraph_format.space_after = Pt(12)
     try:
-        p_img1.add_run().add_picture(r'D:\mini-project\presentation\logos\image1.png', width=Inches(1.2))
+        p_logo1.add_run().add_picture(r'D:\mini-project\presentation\logos\image1.png', width=Inches(1.1))
     except Exception:
-        p_img1.add_run("[AKTU LOGO]")
+        p_logo1.add_run("[AKTU LOGO]")
 
-    p_img2 = cell_l1.paragraphs[0]
-    p_img2.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    try:
-        p_img2.add_run().add_picture(r'D:\mini-project\presentation\logos\image2.png', width=Inches(1.2))
-    except Exception:
-        p_img2.add_run("[LIET LOGO]")
-
-    p_sp = doc.add_paragraph()
-    p_sp.paragraph_format.space_before = Pt(8)
-
-    # Submitter & Supervisor Table
+    # Submitter & Supervisor Table (2 Columns)
     tbl_sub = doc.add_table(1, 2)
     tbl_sub.alignment = WD_TABLE_ALIGNMENT.CENTER
     c0 = tbl_sub.rows[0].cells[0]
     c1 = tbl_sub.rows[0].cells[1]
-    c0.width = Inches(2.8)
-    c1.width = Inches(2.8)
+    c0.width = Inches(3.0)
+    c1.width = Inches(2.7)
     set_cell_borders(c0, "none", "none", "none", "none")
     set_cell_borders(c1, "none", "none", "none", "none")
 
     p_subm = c0.paragraphs[0]
     p_subm.paragraph_format.line_spacing = 1.15
-    r_s_head = p_subm.add_run("Submitted by:\n")
-    r_s_head.font.name = 'Times New Roman'
-    r_s_head.font.size = Pt(10.5)
-    r_s_head.font.italic = True
-    
-    r_s_name = p_subm.add_run("Dev Rana Kaila\n")
-    r_s_name.font.name = 'Times New Roman'
-    r_s_name.font.size = Pt(11)
-    r_s_name.font.bold = True
-    
-    r_s_det = p_subm.add_run("Roll No.: 2301531530023\nSemester & Section: 7th, A")
-    r_s_det.font.name = 'Times New Roman'
-    r_s_det.font.size = Pt(10)
+    p_subm.alignment = WD_ALIGN_PARAGRAPH.LEFT
+    r = p_subm.add_run("Submitted by\n")
+    r.font.name = 'Times New Roman'; r.font.size = Pt(10.5); r.font.bold = True
+    r = p_subm.add_run("Dev Rana Kaila\n")
+    r.font.name = 'Times New Roman'; r.font.size = Pt(10); r.font.bold = True
+    r = p_subm.add_run("2301531530023\n")
+    r.font.name = 'Times New Roman'; r.font.size = Pt(10)
+    r = p_subm.add_run("AIML")
+    r.font.name = 'Times New Roman'; r.font.size = Pt(10)
 
     p_sup = c1.paragraphs[0]
     p_sup.paragraph_format.line_spacing = 1.15
     p_sup.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-    r_g_head = p_sup.add_run("Under the Supervision of:\n")
-    r_g_head.font.name = 'Times New Roman'
-    r_g_head.font.size = Pt(10.5)
-    r_g_head.font.italic = True
-    
-    r_g_name = p_sup.add_run("Dr. Devendra Gautam\n")
-    r_g_name.font.name = 'Times New Roman'
-    r_g_name.font.size = Pt(11)
-    r_g_name.font.bold = True
-    
-    r_g_det = p_sup.add_run("Associate Professor\nDept. of CSE, LIET")
-    r_g_det.font.name = 'Times New Roman'
-    r_g_det.font.size = Pt(10)
+    r = p_sup.add_run("Under the Supervision of\n")
+    r.font.name = 'Times New Roman'; r.font.size = Pt(10.5); r.font.bold = True
+    r = p_sup.add_run("Dr. Devendra Gautam\n")
+    r.font.name = 'Times New Roman'; r.font.size = Pt(10); r.font.bold = True
+    r = p_sup.add_run("Associate Professor\n")
+    r.font.name = 'Times New Roman'; r.font.size = Pt(10)
+    r = p_sup.add_run("Dept. of CSE")
+    r.font.name = 'Times New Roman'; r.font.size = Pt(10)
+
+    # LIET Logo in Center
+    p_logo2 = doc.add_paragraph()
+    p_logo2.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p_logo2.paragraph_format.space_before = Pt(10)
+    p_logo2.paragraph_format.space_after = Pt(8)
+    try:
+        p_logo2.add_run().add_picture(r'D:\mini-project\presentation\logos\image2.png', width=Inches(1.0))
+    except Exception:
+        p_logo2.add_run("[LIET LOGO]")
 
     # Department and College Info
     p_dept = doc.add_paragraph()
-    p_dept.paragraph_format.space_before = Pt(16)
+    p_dept.paragraph_format.space_before = Pt(4)
     p_dept.paragraph_format.space_after = Pt(2)
     p_dept.paragraph_format.line_spacing = 1.15
     p_dept.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r_dept = p_dept.add_run("Department of Computer Science & Engineering & Allied Branches\n")
-    r_dept.font.name = 'Times New Roman'
-    r_dept.font.size = Pt(11)
-    r_dept.font.bold = True
+    r_dept = p_dept.add_run("Department of Computer Science & Engineering\n")
+    r_dept.font.name = 'Times New Roman'; r_dept.font.size = Pt(10.5); r_dept.font.bold = True
     
     r_inst = p_dept.add_run("Lloyd Institute of Engineering & Technology\n")
-    r_inst.font.name = 'Times New Roman'
-    r_inst.font.size = Pt(12)
-    r_inst.font.bold = True
-    r_inst.font.color.rgb = COLOR_PRIMARY
+    r_inst.font.name = 'Times New Roman'; r_inst.font.size = Pt(11.5); r_inst.font.bold = True
+    r_inst.font.color.rgb = RGBColor(139, 0, 0) # Dark Red / Maroon
     
     r_loc = p_dept.add_run("Plot No. 3, Knowledge Park II, Greater Noida, Uttar Pradesh 201306\n")
-    r_loc.font.name = 'Times New Roman'
-    r_loc.font.size = Pt(9.5)
-    
-    r_sess = p_dept.add_run("Session: 2026–27")
-    r_sess.font.name = 'Times New Roman'
-    r_sess.font.size = Pt(10.5)
-    r_sess.font.bold = True
+    r_loc.font.name = 'Times New Roman'; r_loc.font.size = Pt(9)
+
+    # Bottom Gold Divider Line
+    add_gold_divider(doc)
+
+    p_sess = doc.add_paragraph()
+    p_sess.paragraph_format.space_before = Pt(2)
+    p_sess.paragraph_format.space_after = Pt(0)
+    p_sess.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r_sess = p_sess.add_run("Session: 2026-27")
+    r_sess.font.name = 'Times New Roman'; r_sess.font.size = Pt(10.5); r_sess.font.bold = True
 
     doc.add_page_break()
 
@@ -205,10 +204,10 @@ def add_certificate(doc):
 
     add_body_p(
         doc,
-        "This is to certify that the Mini Project Report entitled “Dual-Stream Spatial and Frequency-Domain "
-        "Deepfake Video Detection using EfficientNet-B4 and Discrete Cosine Transform (DCT)” is a bonafide work carried out "
+        "This is to certify that the Mini Project Report entitled \"Dual-Stream Spatial and Frequency-Domain "
+        "Deepfake Video Detection using EfficientNet-B4 and Discrete Cosine Transform (DCT)\" is a bonafide work carried out "
         "by Dev Rana Kaila (Roll No. 2301531530023) in partial fulfilment of the requirements for the award of the degree of "
-        "Bachelor of Technology in Computer Science & Engineering (AIML) during the academic year 2026–27, 4th Year, at "
+        "Bachelor of Technology in Computer Science & Engineering (AIML) during the academic year 2026-27, 4th Year, at "
         "the Department of Computer Science & Engineering & Allied Branches, Lloyd Institute of Engineering & Technology."
     )
 
@@ -220,7 +219,7 @@ def add_certificate(doc):
     )
 
     p_sp = doc.add_paragraph()
-    p_sp.paragraph_format.space_before = Pt(40)
+    p_sp.paragraph_format.space_before = Pt(45)
 
     # 3 Signatures Table
     tbl_sig = doc.add_table(1, 3)
@@ -294,8 +293,8 @@ def add_declaration(doc):
 
     add_body_p(
         doc,
-        "I hereby declare that the Mini Project Report entitled “Dual-Stream Spatial and Frequency-Domain "
-        "Deepfake Video Detection using EfficientNet-B4 and Discrete Cosine Transform (DCT)” submitted to the "
+        "I hereby declare that the Mini Project Report entitled \"Dual-Stream Spatial and Frequency-Domain "
+        "Deepfake Video Detection using EfficientNet-B4 and Discrete Cosine Transform (DCT)\" submitted to the "
         "Department of Computer Science & Engineering & Allied Branches, Lloyd Institute of Engineering & Technology, "
         "in partial fulfilment of the requirements for the degree of Bachelor of Technology in Computer Science & Engineering "
         "(AIML), is a record of original work carried out by me under the guidance and supervision of Dr. Devendra Gautam, "
@@ -397,7 +396,7 @@ def add_abstract(doc):
         "threats to automated biometric authentication, financial KYC verification, executive communications, and democratic integrity. "
         "Conventional deepfake detection architectures rely predominantly on single-stream RGB spatial convolutional networks that "
         "attempt to localize visible pixel flaws such as warping or boundary blending. However, spatial detectors suffer devastating "
-        "accuracy degradation (often losing 20–35% accuracy) when subjected to real-world social media video compression "
+        "accuracy degradation (often losing 20-35% accuracy) when subjected to real-world social media video compression "
         "(e.g., H.264/H.265 codecs) and downsampling."
     )
 
@@ -747,7 +746,6 @@ def add_list_of_abbreviations(doc):
     tbl = doc.add_table(len(abbrevs) + 1, 2)
     tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
     
-    # Header
     c0 = tbl.rows[0].cells[0]
     c1 = tbl.rows[0].cells[1]
     c0.width = Inches(1.8)

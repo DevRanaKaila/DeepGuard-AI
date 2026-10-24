@@ -95,70 +95,70 @@ def generate_weekly_log():
     table1_rows = [
         ['Date Range', 'Phase / Milestone', 'Activities & Deliverables', 'Status', 'Guide Signature'],
         [
-            '06/09/2026 – 12/09/2026',
+            '06/09/2026 - 12/09/2026',
             'Topic Finalisation & Literature Study',
             'Finalised project topic on deepfake detection. Studied 8 research papers (Rossler, Frank, Qian, Afchar, Li, Tan, Selvaraju, Durall). Identified FaceForensics++ and Celeb-DF v2 as benchmark datasets. Set up Python environment: PyTorch 2.0+, timm, OpenCV, SciPy, Streamlit.',
             'Completed',
             ''
         ],
         [
-            '13/09/2026 – 19/09/2026',
+            '13/09/2026 - 19/09/2026',
             'Synopsis Preparation',
             'Prepared formal MINI PROJECT SYNOPSIS in LIET-prescribed format. Defined 6 project objectives. Drafted Literature Survey, Work Plan, Hardware/Software requirements. Submitted draft to Dr. Devendra Gautam for review.',
             'Completed',
             ''
         ],
         [
-            '20/09/2026 – 26/09/2026',
+            '20/09/2026 - 26/09/2026',
             'Synopsis Approval & Architecture Design',
             'Incorporated mentor feedback. Received synopsis approval. Designed dual-stream pipeline diagram, DFD Level-0 and Level-1. Initialized GitHub repository: github.com/DevRanaKaila/DeepGuard-AI. Initial commit with project structure.',
             'Completed',
             ''
         ],
         [
-            '27/09/2026 – 03/10/2026',
+            '27/09/2026 - 03/10/2026',
             'Dataset Curation & Preprocessing Pipeline',
             'Set up FaceForensics++ dataset structure across raw, c23, c40 tiers. Implemented video frame extraction at 5 FPS using OpenCV. Integrated MTCNN for face detection with 15% boundary margin. Verified preprocessing pipeline on 50 sample videos. Created src/data/ module.',
             'Completed',
             ''
         ],
         [
-            '04/10/2026 – 10/10/2026',
+            '04/10/2026 - 10/10/2026',
             'Spatial Stream Implementation',
             'Integrated EfficientNet-B4 backbone via timm (pretrained ImageNet). Implemented SpatialStream module in src/models/spatial_stream.py. Validated 1792-d feature vector output and gradient flow. Spatial-only baseline achieves 82% accuracy.',
             'Completed',
             ''
         ],
         [
-            '11/10/2026 – 17/10/2026',
+            '11/10/2026 - 17/10/2026',
             'DCT Transform & Mid-Term Review',
             'Implemented 2D-DCT-II transform and Radial Azimuthal Spectrum A(r) in src/data/dct_transform.py. Demonstrated spatial pipeline to mentor. Prepared mid-term progress report. Frequency stream CNN prototype initiated. Mid-term review signed off.',
             'Completed',
             ''
         ],
         [
-            '18/10/2026 – 24/10/2026',
+            '18/10/2026 - 24/10/2026',
             'Frequency Stream & Fusion Module',
             'Implemented 4-stage Spectral-CNN (src/models/frequency_stream.py). Implemented attention-gated bilinear fusion (src/models/fusion.py). Complete DualStreamNet integration. Configured training engine with AdamW, label smoothing, and AMP.',
             'Completed',
             ''
         ],
         [
-            '25/10/2026 – 31/10/2026',
+            '25/10/2026 - 31/10/2026',
             'Dashboard, Grad-CAM & Testing',
             'Develop Streamlit web dashboard (app.py). Implement Grad-CAM heatmap generator (src/utils/gradcam.py). End-to-end pipeline integration. Cross-dataset testing on Celeb-DF v2. Benchmark against XceptionNet and F3-Net baselines.',
             'Planned',
             ''
         ],
         [
-            '01/11/2026 – 07/11/2026',
+            '01/11/2026 - 07/11/2026',
             'Report Writing & Code Finalization',
             'Draft complete 60+ page project report strictly adhering to AKTU formatting rules. Conduct ablation study (spatial-only vs. dual-stream). Run plagiarism check (Turnitin < 20%). Finalize GitHub repo with full documentation and README.',
             'Planned',
             ''
         ],
         [
-            '08/11/2026 – 14/11/2026',
+            '08/11/2026 - 14/11/2026',
             'Final Submission & Viva Defense',
             'Spiral-bind project report. Prepare 15-slide viva presentation deck. Live demo of Streamlit dashboard with real and fake test videos. Final submission to Dr. Devendra Gautam. Panel question-and-answer defense.',
             'Planned',
