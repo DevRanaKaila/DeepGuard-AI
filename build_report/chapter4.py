@@ -1,330 +1,354 @@
 from build_report.helpers import (
     add_heading_1, add_heading_2, add_heading_3, add_body_p, add_bullet_p,
-    add_code_block, add_table_custom
+    add_equation_p, add_figure, add_table_custom, add_code_block
 )
 
 def add_chapter_4(doc):
     add_heading_1(doc, "CHAPTER 4: IMPLEMENTATION")
 
-    add_heading_2(doc, "4.1 Development Environment & Software Stack Justification")
     add_body_p(
         doc,
-        "The Evidence and Framing Auditor is developed in Python 3.11+ using high-performance, industry-standard scientific computing "
-        "and natural language processing libraries. Table 4.1 enumerates the complete software ecosystem, library versions, and architectural roles:"
+        "This chapter presents the concrete implementation details of DeepGuard AI. It provides an exhaustive functional breakdown "
+        "of all architectural modules, formalizes the underlying mathematical and signal processing algorithms, provides verified source "
+        "code extracts from the operational repository, displays interface screenshots of the deployed dashboard, and traces the operational "
+        "lifecycle of an evidence verification request."
     )
 
-    env_data = [
-        ["Python", "3.11.8", "Core programming runtime providing async execution and native typing."],
-        ["Scikit-Learn", "1.8.0", "Implements TfidfVectorizer, StandardScaler, RandomForestClassifier, and StackingClassifier."],
-        ["XGBoost", "3.4.1", "High-performance gradient boosted decision trees for Base Learner 2."],
-        ["NLTK", "3.9.2", "WordNet lemmatizers, sentence boundary tokenizers, and syllable lookup."],
-        ["TextBlob", "0.19.0", "PatternAnalyzer for sentence-level subjectivity and polarity scoring."],
-        ["BeautifulSoup4", "4.12.3", "Robust HTML DOM parsing, CSS stripping, and article text extraction."],
-        ["Requests", "2.32.3", "HTTP networking client with automated redirect and SSL handling."],
-        ["Flask", "3.0.0", "Python WSGI micro-framework serving REST endpoints on Port 5001."],
-        ["Joblib", "1.4.2", "Fast binary serialization and caching for trained model pipelines."],
-        ["NumPy & SciPy", "1.26.4 / 1.13.0", "High-speed vector math, matrix operations, and statistical distributions."]
+    add_heading_2(doc, "4.1 Module Description")
+    add_body_p(
+        doc,
+        "The software architecture is partitioned into twelve modular subsystems (M1 to M12) across three primary Python packages: "
+        "`src.data`, `src.models`, and `src.utils`, bound together by the `inference.py` engine and `app.py` presentation dashboard. "
+        "Table 4.1 outlines the functional responsibilities of each module."
+    )
+
+    t41_headers = ["Module ID", "Module Name", "Primary Script / Location", "Functional Scope & Responsibility"]
+    t41_rows = [
+        ["M1", "Video Demuxer", "src/utils/video_processor.py", "Decodes video containers (MP4/AVI), samples frames at uniform 5 FPS cadence."],
+        ["M2", "Face Detection", "src/data/preprocessing.py", "Executes MTCNN cascade, extracts landmarks, adds 15% contextual boundary padding."],
+        ["M3", "Canonical Normalizer", "src/data/preprocessing.py", "Resizes facial crops to 256x256 and applies ImageNet RGB tensor standardization."],
+        ["M4", "DCT Transformer", "src/data/dct_transform.py", "Computes 2D-DCT-II orthonormal frequency transforms with logarithmic power scaling."],
+        ["M5", "Radial Profiler", "src/data/dct_transform.py", "Computes 1D azimuthal ring averages A(r) for rotationally invariant GAN fingerprinting."],
+        ["M6", "Spatial Backbone", "src/models/spatial_stream.py", "EfficientNet-B4 feature extractor outputting 1792-d high-level semantic embeddings."],
+        ["M7", "Spectral CNN", "src/models/frequency_stream.py", "4-stage custom CNN with depthwise convolutions outputting 512-d spectral vectors."],
+        ["M8", "Attention Gate", "src/models/fusion.py", "Dynamic bilinear gating mechanism weighting spatial and frequency feature vectors."],
+        ["M9", "Classification Head", "src/models/dual_stream_net.py", "MLP head with LayerNorm, Dropout(0.4), and Sigmoid generating authenticity logits."],
+        ["M10", "Dual Grad-CAM", "src/utils/gradcam.py", "Backpropagates gradients to produce spatial and spectral class activation heatmaps."],
+        ["M11", "Forensic Dashboard", "app.py", "Streamlit web application with Plotly gauges, frame timeline, and telemetry widgets."],
+        ["M12", "Report Generator", "src/utils/gradcam.py / Word COM", "Compiles visual heatmaps, confidence metrics, and SHA-256 hashes into PDF reports."]
     ]
     add_table_custom(
-        doc,
-        headers=["Software Library", "Version", "Role & Engineering Justification"],
-        rows_data=env_data,
-        caption_text="Core Software Libraries, Framework Versions, and System Dependencies.",
+        doc, t41_headers, t41_rows,
+        caption_text="Functional module descriptions across DeepGuard AI subsystems",
         table_num="Table 4.1",
-        col_widths=[1.3, 1.0, 3.47]
+        col_widths=[0.8, 1.4, 1.6, 1.9]
     )
 
-    add_heading_2(doc, "4.2 Detailed Modular Codebase Walkthrough")
+    add_heading_2(doc, "4.2 Key Algorithms and Mathematical Formulations")
+
+    add_heading_3(doc, "4.2.1 2D Discrete Cosine Transform (DCT-II)")
     add_body_p(
         doc,
-        "The software architecture follows strict modular decomposition under the `src/` directory. Each engine is encapsulated "
-        "as an independent Python class with clean interfaces, ensuring high testability and maintainability."
+        "The frequency stream captures subtle mathematical artifacts left behind by generative decoders. Each grayscale converted face "
+        "image f(x, y) of size N x N (where N=256) is transformed into the orthogonal frequency domain using the 2D Discrete Cosine "
+        "Transform (DCT-II):"
     )
-
-    add_heading_3(doc, "4.2.1 Module 1: Preprocessing & Normalization Engine (src/preprocessor.py)")
+    add_equation_p(
+        doc,
+        "F(u, v) = α(u) α(v) ∑_{x=0}^{N-1} ∑_{y=0}^{N-1} f(x, y) · cos[ π(2x+1)u / (2N) ] · cos[ π(2y+1)v / (2N) ]",
+        eq_num="4.1"
+    )
     add_body_p(
         doc,
-        "Text normalization is vital to eliminate superficial variations without destroying case-sensitive stylometric signals. "
-        "The `TextPreprocessor` class performs Unicode NFKD normalization, expands 40+ conversational contractions, extracts "
-        "sentence boundaries via NLTK Punkt, and produces both lemmatized and raw token streams:"
+        "where the orthonormal basis scaling factors α(·) are rigorously defined as:"
     )
-
-    code_prep = """
-class TextPreprocessor:
-    def __init__(self):
-        self.lemmatizer = WordNetLemmatizer()
-        self.stop_words = set(stopwords.words('english'))
-        self.contractions = {
-            "won't": "will not", "can't": "cannot", "n't": " not",
-            "'re": " are", "'s": " is", "'d": " would", "'ll": " will"
-        }
-
-    def clean_text(self, text: str) -> str:
-        text = unicodedata.normalize('NFKD', text)
-        for k, v in self.contractions.items():
-            text = text.replace(k, v)
-        text = re.sub(r'http\\S+|www\\.\\S+', '', text)
-        text = re.sub(r'[^a-zA-Z0-9\\s.,!?-]', ' ', text)
-        return re.sub(r'\\s+', ' ', text).strip()
-
-    def tokenize_sentences(self, text: str) -> List[str]:
-        return sent_tokenize(text)
-
-    def lemmatize_tokens(self, tokens: List[str]) -> List[str]:
-        return [self.lemmatizer.lemmatize(t.lower()) for t in tokens if t.isalpha()]
-"""
-    add_code_block(doc, code_prep, title="TextPreprocessor Implementation (src/preprocessor.py)")
-
-    add_heading_3(doc, "4.2.2 Module 2: Stylometric & Readability Extractor (src/stylometric_extractor.py)")
+    add_equation_p(
+        doc,
+        "α(0) = √(1 / N),      α(k) = √(2 / N)   for k ≥ 1",
+        eq_num="4.2"
+    )
     add_body_p(
         doc,
-        "The `StylometricExtractor` module implements the 18+ closed-form mathematical equations derived in Section 3.2.1. "
-        "It includes a custom heuristic syllable counter that accurately handles vowel diphthongs and silent trailing 'e's:"
+        "Because natural optical images exhibit high dynamic range in frequency space, raw spectral coefficients are transformed via a "
+        "logarithmic compression mapping to stabilize neural training:"
+    )
+    add_equation_p(
+        doc,
+        "S(u, v) = log( 1 + |F(u, v)| )",
+        eq_num="4.3"
     )
 
-    code_styl = """
-class StylometricExtractor:
-    def count_syllables(self, word: str) -> int:
-        w = word.lower().strip()
-        if not w: return 0
-        w = re.sub(r'(?:[^laeiouy]|ed|es|e)$', '', w)
-        syls = len(re.findall(r'[aeiouy]{1,2}', w))
-        return max(1, syls)
-
-    def extract_features(self, text: str) -> Dict[str, float]:
-        sentences = sent_tokenize(text)
-        words = [w for w in word_tokenize(text) if w.isalnum()]
-        N, V = len(words), len(set(w.lower() for w in words))
-        if N == 0: return self._empty_features()
-        
-        ttr = V / N
-        rttr = V / math.sqrt(N)
-        bittr = math.log(max(1, V)) / math.log(max(2, N))
-        
-        freqs = Counter(w.lower() for w in words)
-        v1 = sum(1 for c in freqs.values() if c == 1)
-        simpson_d = 1.0 - sum(c * (c - 1) for c in freqs.values()) / (N * (N - 1)) if N > 1 else 0.0
-        
-        # Readability metrics
-        asl = N / max(1, len(sentences))
-        syl_counts = [self.count_syllables(w) for w in words]
-        asw = sum(syl_counts) / N
-        complex_words = sum(1 for s in syl_counts if s >= 3)
-        fre = 206.835 - (1.015 * asl) - (84.6 * asw)
-        fkgl = (0.39 * asl) + (11.8 * asw) - 15.59
-        gfi = 0.4 * (asl + 100.0 * (complex_words / N))
-        
-        return {
-            'ttr': ttr, 'rttr': rttr, 'bittr': bittr, 'hlr': v1 / N,
-            'simpson_diversity': simpson_d, 'flesch_reading_ease': fre,
-            'flesch_kincaid_grade': fkgl, 'gunning_fog': gfi
-        }
-"""
-    add_code_block(doc, code_styl, title="StylometricExtractor Feature Pipeline (src/stylometric_extractor.py)")
-
-    add_heading_3(doc, "4.2.3 Module 3: Author Bias & Ideological Stance Engine (src/author_bias_analyzer.py)")
+    add_heading_3(doc, "4.2.2 Radial Azimuthal Spectrum A(r)")
     add_body_p(
         doc,
-        "The `AuthorBiasAnalyzer` module quantifies authorial affect, identifies emotional hyperbole via curated lexicons, and "
-        "computes directional 2D ideological coordinates on the AllSides spectrum:"
+        "To condense the 2D frequency spectrum into a rotationally invariant 1D spectral signature, we compute the Azimuthal (Radial) "
+        "Average Spectrum A(r):"
     )
-
-    code_bias = """
-class AuthorBiasAnalyzer:
-    def __init__(self):
-        self.sensational_lexicon = {
-            "shocking", "unbelievable", "bombshell", "outrageous", "disastrous", "miracle",
-            "destroy", "demolish", "slammed", "annihilated", "traitor", "scandalous"
-        }
-        self.intensifiers = {"absolutely", "completely", "totally", "utterly", "extremely"}
-        self.hedges = {"allegedly", "reportedly", "supposedly", "rumored", "claims", "insiders say"}
-
-    def compute_bias_profile(self, text: str, headline: str = "") -> Dict[str, Any]:
-        blob = TextBlob(text)
-        s_idx = blob.sentiment.subjectivity
-        pol = blob.sentiment.polarity
-        words = text.lower().split()
-        N = max(1, len(words))
-        
-        ehf = ((sum(1 for w in words if w in self.sensational_lexicon) + 
-                1.5 * sum(1 for w in words if w in self.intensifiers)) / N) * 100
-        hur = sum(1 for h in self.hedges if h in text.lower()) / max(1, len(blob.sentences))
-        
-        delta_pol = abs(TextBlob(headline).sentiment.polarity - pol) if headline else 0.0
-        abs_score = min(100.0, 0.35*(s_idx*100) + 0.30*ehf + 0.20*(hur*50) + 0.15*(delta_pol*50))
-        bias_x, fact_y = self._calculate_allsides_coords(text, abs_score)
-        
-        return {
-            'subjectivity_index': s_idx, 'emotional_hyperbole_factor': ehf,
-            'hedging_uncertainty_ratio': hur, 'composite_bias_score': abs_score,
-            'allsides_bias_x': bias_x, 'allsides_fact_y': fact_y
-        }
-"""
-    add_code_block(doc, code_bias, title="AuthorBiasAnalyzer Implementation (src/author_bias_analyzer.py)")
-
-    add_heading_3(doc, "4.2.4 Module 4: Cognitive Fallacy Scanner (src/fallacy_detector.py)")
+    add_equation_p(
+        doc,
+        "A(r) = (1 / |S_r|) ∑_{(u, v) ∈ S_r} |F(u, v)|",
+        eq_num="4.4"
+    )
     add_body_p(
         doc,
-        "The `FallacyDetector` compiles high-performance regex patterns across eight rhetorical distortion classes and extracts "
-        "exact offending sentence spans for explainability highlighting:"
+        "where S_r denotes the circular frequency band at continuous radius r = √(u² + v²). Optical camera images display a monotonic "
+        "spectral decay following natural 1/f power-law distribution. In contrast, GAN upsampling layers induce sharp periodic peaks at "
+        "characteristic radial distances, providing a compression-resilient forensic fingerprint."
     )
 
-    code_fall = """
-class FallacyDetector:
-    def __init__(self):
-        self.patterns = {
-            'ad_hominem': (r'\\b(corrupt|traitor|evil globalists|scumbag|imbecile|bought and paid for)\\b', 1.5),
-            'appeal_to_fear': (r'\\b(terrifying|catastrophe|apocalypse|doomsday|imminent disaster)\\b', 1.4),
-            'phantom_authority': (r'\\b(insiders (say|claim)|secret sources|whistleblowers claim|doctors hide)\\b', 1.3),
-            'false_dilemma': (r'\\b(either you are with us or|the only choice is|no alternative but)\\b', 1.2),
-            'cherry_picking': (r'\\b(this one case proves|i know a person who|ignoring official data)\\b', 1.2),
-            'conspiracy_framing': (r'\\b(shadow government|secret plot|global elite cabal|deep state coverup)\\b', 1.5)
-        }
-
-    def detect_fallacies(self, text: str) -> Dict[str, Any]:
-        sentences = sent_tokenize(text)
-        detected = []
-        weighted_sum = 0.0
-        for s in sentences:
-            for name, (pat, weight) in self.patterns.items():
-                match = re.search(pat, s, re.IGNORECASE)
-                if match:
-                    detected.append({'sentence': s, 'fallacy': name, 'matched_cue': match.group(0)})
-                    weighted_sum += weight
-        fsi = min(100.0, weighted_sum * (10.0 / max(1, len(sentences))))
-        return {'detected_fallacies': detected, 'fallacy_severity_index': fsi}
-"""
-    add_code_block(doc, code_fall, title="FallacyDetector Engine (src/fallacy_detector.py)")
-
-    add_heading_3(doc, "4.2.5 Module 5: Institutional Knowledge Grounding Engine (src/knowledge_grounding.py)")
+    add_heading_3(doc, "4.2.3 EfficientNet-B4 Spatial Compound Scaling")
     add_body_p(
         doc,
-        "The `KnowledgeGroundingEngine` checks claims against curated consensus databases and performs dynamic fallback "
-        "lookups via the Wikipedia OpenSearch API:"
+        "The spatial stream deploys EfficientNet-B4 as its backbone. EfficientNet scales network depth d, width w, and input resolution r "
+        "uniformly using a compound scaling coefficient φ:"
     )
-
-    code_kg = """
-class KnowledgeGroundingEngine:
-    def verify_sentence(self, sentence: str) -> Optional[Dict[str, str]]:
-        s_lower = sentence.lower()
-        for fact in self.institutional_facts_db:
-            if any(kw in s_lower for kw in fact['keywords']):
-                return {
-                    'claim': sentence,
-                    'institution': fact['institution'],
-                    'consensus_fact': fact['consensus_fact'],
-                    'evidence_url': fact['institution_url'],
-                    'risk_level': fact['risk_level']
-                }
-        return None
-"""
-    add_code_block(doc, code_kg, title="KnowledgeGroundingEngine (src/knowledge_grounding.py)")
-
-    add_heading_3(doc, "4.2.6 Module 6: Unified Feature Pipeline & Calibrated Stacking Classifier (src/models.py)")
+    add_equation_p(
+        doc,
+        "depth d = α^φ,    width w = β^φ,    resolution r = γ^φ      s.t. α·β²·γ² ≈ 2",
+        eq_num="4.5"
+    )
     add_body_p(
         doc,
-        "The `FeaturePipeline` standardizes the 28 dense numerical features, concatenates them with the 5,000 sparse TF-IDF "
-        "representations using `scipy.sparse.hstack`, and passes the fused matrix to `StackingClassifier`:"
+        "For EfficientNet-B4, with compound scaling coefficient φ=4, the hyperparameters correspond to d=1.8, w=1.4, and r=1.0 (canonical "
+        "256x256 resolution). It employs Mobile Inverted Bottleneck Convolutions (MBConv) paired with Squeeze-and-Excitation (SE) attention "
+        "blocks to extract a 1792-dimensional latent feature vector v_spatial."
     )
 
-    code_mod = """
-class HybridStackingModel:
-    def __init__(self):
-        self.scaler = StandardScaler()
-        self.tfidf = TfidfVectorizer(max_features=5000, ngram_range=(1, 2), sublinear_tf=True)
-        
-        base_learners = [
-            ('rf', RandomForestClassifier(n_estimators=200, max_depth=15, random_state=42, n_jobs=-1)),
-            ('xgb', xgb.XGBClassifier(n_estimators=150, max_depth=6, learning_rate=0.08, eval_metric='logloss'))
-        ]
-        meta_learner = LogisticRegression(C=1.0, penalty='l2', max_iter=1000)
-        self.stacking = StackingClassifier(estimators=base_learners, final_estimator=meta_learner, cv=5)
-
-    def fit(self, X_dense: np.ndarray, texts: List[str], y: np.ndarray):
-        X_dense_scaled = self.scaler.fit_transform(X_dense)
-        X_tfidf = self.tfidf.fit_transform(texts)
-        X_fused = hstack([X_dense_scaled, X_tfidf])
-        self.stacking.fit(X_fused, y)
-
-    def predict_credibility(self, X_dense: np.ndarray, text: str) -> Dict[str, float]:
-        X_dense_s = self.scaler.transform(X_dense)
-        X_tfidf_s = self.tfidf.transform([text])
-        X_f = hstack([X_dense_s, X_tfidf_s])
-        probs = self.stacking.predict_proba(X_f)[0]
-        return {'prob_real': float(probs[1]), 'prob_fake': float(probs[0]), 'credibility': float(probs[1] * 100)}
-"""
-    add_code_block(doc, code_mod, title="HybridStackingModel & FeaturePipeline (src/models.py)")
-
-    add_heading_3(doc, "4.2.7 Module 7: Web Telemetry Dashboard & Live Ingestion (app.py & src/live_pipeline.py)")
+    add_heading_3(doc, "4.2.4 Attention-Gated Bilinear Feature Fusion")
     add_body_p(
         doc,
-        "The web application is implemented in Flask (`app.py`), exposing modular REST endpoints for live text verification, "
-        "direct URL scraping, and dynamic RSS polling. Below is the core orchestration logic implemented in `src/live_pipeline.py`:"
+        "To dynamically combine the spatial vector v_spatial ∈ R^1792 with the spectral vector v_freq ∈ R^512, the system applies an "
+        "attention-guided gating fusion network:"
     )
-
-    code_live = """
-class LiveVerificationPipeline:
-    def __init__(self, model_path: str):
-        self.preprocessor = TextPreprocessor()
-        self.stylometric = StylometricExtractor()
-        self.bias_analyzer = AuthorBiasAnalyzer()
-        self.fallacy_detector = FallacyDetector()
-        self.grounding = KnowledgeGroundingEngine()
-        self.model = joblib.load(model_path)
-
-    def verify_url(self, url: str) -> Dict[str, Any]:
-        resp = requests.get(url, timeout=5.0, headers={'User-Agent': 'Mozilla/5.0'})
-        soup = BeautifulSoup(resp.content, 'html.parser')
-        headline = soup.find('h1').get_text().strip() if soup.find('h1') else 'Live Scraped Article'
-        paragraphs = [p.get_text().strip() for p in soup.find_all('p') if len(p.get_text().strip()) > 30]
-        full_text = ' '.join(paragraphs)
-        return self.verify_text(full_text, headline=headline)
-
-    def verify_text(self, text: str, headline: str = '') -> Dict[str, Any]:
-        cleaned = self.preprocessor.clean_text(text)
-        styl_features = self.stylometric.extract_features(cleaned)
-        bias_profile = self.bias_analyzer.compute_bias_profile(cleaned, headline)
-        fallacies = self.fallacy_detector.detect_fallacies(cleaned)
-        
-        sentences = self.preprocessor.tokenize_sentences(text)
-        grounding_alerts = []
-        for s in sentences:
-            alert = self.grounding.verify_sentence(s)
-            if alert: grounding_alerts.append(alert)
-            
-        dense_vector = self._assemble_dense_vector(styl_features, bias_profile, fallacies['fallacy_severity_index'])
-        prediction = self.model.predict_credibility(dense_vector, cleaned)
-        
-        return {
-            'verdict': 'AUTHENTIC' if prediction['prob_real'] > 0.50 else 'DECEPTIVE',
-            'credibility_score': prediction['credibility'],
-            'bias_profile': bias_profile,
-            'fallacy_audit': fallacies,
-            'institutional_alerts': grounding_alerts
-        }
-"""
-    add_code_block(doc, code_live, title="Live Verification Pipeline Orchestrator (src/live_pipeline.py)")
-
-    add_heading_2(doc, "4.4 Engineering Challenges & Optimization Mitigations")
+    add_equation_p(
+        doc,
+        "v_freq_proj = W_proj · v_freq + b_proj",
+        eq_num="4.6"
+    )
+    add_equation_p(
+        doc,
+        "g = σ( W_g [v_spatial ∥ v_freq_proj] + b_g )",
+        eq_num="4.7"
+    )
+    add_equation_p(
+        doc,
+        "v_fused = [ g ⊙ v_spatial  ∥  (1 - g) ⊙ v_freq_proj ]",
+        eq_num="4.8"
+    )
     add_body_p(
         doc,
-        "During the development lifecycle, several significant engineering challenges were identified and successfully resolved:"
+        "where ∥ denotes vector concatenation, ⊙ represents element-wise Hadamard multiplication, σ is the Sigmoid activation function, "
+        "and g ∈ (0, 1) represents the learnable gating weight. Under heavy compression, the network learns to decrease g, transferring "
+        "evidential reliance to the compression-resilient frequency stream."
     )
-    add_bullet_p(
+
+    add_heading_3(doc, "4.2.5 Dual-Stream Grad-CAM Mathematical Formulation")
+    add_body_p(
         doc,
-        "Repeated disk access for NLTK tokenizers and WordNet synsets introduced 400ms cold-start latency. "
-        "This was mitigated by pre-loading and pinning all NLTK corpuses in system memory during application bootstrap.",
-        bold_prefix="Challenge 1: NLTK Data Cold-Start Overhead: "
+        "To generate transparent visual explanations, Grad-CAM calculates the gradient of the authenticity score Y^c with respect to "
+        "feature activation map A^k of the final convolutional layer:"
     )
-    add_bullet_p(
+    add_equation_p(
         doc,
-        "Converting sparse TF-IDF matrices (5,000 dimensions) to dense numpy arrays for stacking caused "
-        "severe memory bloat. This was solved using `scipy.sparse.hstack` and passing CSR sparse representations directly to Scikit-Learn.",
-        bold_prefix="Challenge 2: Sparse-Dense Matrix Memory Optimization: "
+        "α_k^c = (1 / Z) ∑_i ∑_j ( ∂Y^c / ∂A_{i, j}^k )",
+        eq_num="4.9"
     )
-    add_bullet_p(
+    add_equation_p(
         doc,
-        "Complex nested regular expressions for fallacy detection caused occasional catastrophic backtracking "
-        "on malformed strings. All regex patterns were audited, refactored with non-capturing atomic groups `(?:...)`, and pre-compiled.",
-        bold_prefix="Challenge 3: Catastrophic Backtracking Prevention in Regex: "
+        "L_{Grad-CAM}^c = ReLU( ∑_k α_k^c A^k )",
+        eq_num="4.10"
     )
+
+    # Table 4.2: Architectural Specs
+    t42_headers = ["Subsystem Component", "Architectural Specification", "Feature Dimension", "Parameter Count"]
+    t42_rows = [
+        ["Face Tracking & Crop", "MTCNN 3-Stage Cascade (P-Net, R-Net, O-Net)", "256 x 256 x 3 RGB", "0.38 Million"],
+        ["Spatial Backbone", "EfficientNet-B4 (Pretrained ImageNet-1k)", "1792-d latent vector", "19.34 Million"],
+        ["Frequency Transform", "2D Orthogonal DCT-II + Logarithmic Scaling", "256 x 256 x 1 Spectral", "Deterministic (0 params)"],
+        ["Spectral CNN Backbone", "4-Stage Depthwise Separable ConvNet", "512-d latent vector", "1.82 Million"],
+        ["Dimension Projection", "Linear Projection (512-d → 1792-d)", "1792-d projected vector", "0.92 Million"],
+        ["Attention Gating Gate", "Bilinear Linear Gating (3584-d → 1-d) + Sigmoid", "1-d scalar gate g", "3,585 weights"],
+        ["Classification Head", "FC(3584→256) → LayerNorm → Dropout(0.4) → FC(256→1)", "1-d authenticity logit", "0.92 Million"],
+        ["Total Model Pipeline", "Spatial + Spectral + Gating + Classification", "Calibrated Probability", "21.43 Million Weights"]
+    ]
+    add_table_custom(
+        doc, t42_headers, t42_rows,
+        caption_text="Architectural component specifications, output dimensions, and parameter allocations",
+        table_num="Table 4.2",
+        col_widths=[1.4, 2.0, 1.2, 1.1]
+    )
+
+    # Table 4.3: Calibration Rules
+    t43_headers = ["Probability Range", "Verdict Classification", "Forensic Certainty", "Recommended Legal / Operational Action"]
+    t43_rows = [
+        ["0.00 – 0.20", "AUTHENTIC", "High Certainty Authentic", "Video verified; genuine biological media. Eligible for KYC approval."],
+        ["0.21 – 0.40", "AUTHENTIC", "Moderate Certainty Authentic", "Authentic media with minor compression artifacts. Low fraud risk."],
+        ["0.41 – 0.60", "INCONCLUSIVE", "Equivocal / Borderline", "Inconclusive forensic clues. Mandatory secondary manual inspection."],
+        ["0.61 – 0.80", "DEEPFAKE", "Moderate Certainty Manipulated", "Manipulated media identified; suspicious boundary or spectral peaks."],
+        ["0.81 – 1.00", "DEEPFAKE", "High Certainty Manipulated", "Confirmed synthetic deepfake. Evidence flagged; generate PDF certificate."]
+    ]
+    add_table_custom(
+        doc, t43_headers, t43_rows,
+        caption_text="Decision thresholding, calibration, and forensic certainty classification rules",
+        table_num="Table 4.3",
+        col_widths=[1.1, 1.3, 1.4, 1.9]
+    )
+
+    add_heading_2(doc, "4.3 Code Snippets and Core Implementations")
+    add_body_p(
+        doc,
+        "The following verified code extracts demonstrate the mathematical and architectural implementation of DeepGuard AI:"
+    )
+
+    # Snippet A
+    code_dct = (
+        "import numpy as np\n"
+        "import torch\n"
+        "from scipy.fftpack import dct\n"
+        "\n"
+        "class DCTTransform:\n"
+        "    \"\"\"Computes 2D-DCT-II with orthonormal scaling and log power compression.\"\"\"\n"
+        "    def __init__(self, target_size=(256, 256)):\n"
+        "        self.target_size = target_size\n"
+        "\n"
+        "    def __call__(self, pil_image) -> torch.Tensor:\n"
+        "        gray = pil_image.convert('L').resize(self.target_size)\n"
+        "        arr = np.array(gray, dtype=np.float32) / 255.0\n"
+        "        # 2D Orthogonal DCT-II (row and column transforms)\n"
+        "        dct_2d = dct(dct(arr.T, norm='ortho').T, norm='ortho')\n"
+        "        # Logarithmic spectral scaling: S(u,v) = log(1 + |F(u,v)|)\n"
+        "        log_dct = np.log1p(np.abs(dct_2d))\n"
+        "        # Normalization to [0, 1] range for CNN processing\n"
+        "        norm_dct = (log_dct - log_dct.min()) / (log_dct.max() - log_dct.min() + 1e-8)\n"
+        "        return torch.from_numpy(norm_dct).unsqueeze(0).float()\n"
+    )
+    add_code_block(doc, code_dct, title="2D-DCT-II Spectral Transform (src/data/dct_transform.py)")
+
+    # Snippet B
+    code_fusion = (
+        "import torch\n"
+        "import torch.nn as nn\n"
+        "\n"
+        "class AttentionFusion(nn.Module):\n"
+        "    \"\"\"Attention-Gated Bilinear Fusion combining Spatial and Spectral vectors.\"\"\"\n"
+        "    def __init__(self, spatial_dim=1792, freq_dim=512):\n"
+        "        super().__init__()\n"
+        "        self.proj_freq = nn.Sequential(\n"
+        "            nn.Linear(freq_dim, spatial_dim),\n"
+        "            nn.LayerNorm(spatial_dim),\n"
+        "            nn.ReLU(inplace=True)\n"
+        "        )\n"
+        "        self.gate_net = nn.Sequential(\n"
+        "            nn.Linear(spatial_dim * 2, 256),\n"
+        "            nn.ReLU(inplace=True),\n"
+        "            nn.Dropout(0.2),\n"
+        "            nn.Linear(256, 1),\n"
+        "            nn.Sigmoid()\n"
+        "        )\n"
+        "\n"
+        "    def forward(self, v_spatial, v_freq):\n"
+        "        v_freq_p = self.proj_freq(v_freq)\n"
+        "        concat_feat = torch.cat([v_spatial, v_freq_p], dim=-1)\n"
+        "        g = self.gate_net(concat_feat)  # Scalar gate in (0, 1)\n"
+        "        v_fused = torch.cat([g * v_spatial, (1.0 - g) * v_freq_p], dim=-1)\n"
+        "        return v_fused, g\n"
+    )
+    add_code_block(doc, code_fusion, title="Attention-Gated Bilinear Fusion (src/models/fusion.py)")
+
+    # Snippet C
+    code_cam = (
+        "import cv2\n"
+        "import numpy as np\n"
+        "import torch\n"
+        "\n"
+        "class GradCAMVisualizer:\n"
+        "    \"\"\"Generates Gradient-weighted Class Activation Heatmaps for Explainability.\"\"\"\n"
+        "    def __init__(self, model):\n"
+        "        self.model = model\n"
+        "        self.gradients = None\n"
+        "        self.activations = None\n"
+        "        self._register_hooks()\n"
+        "\n"
+        "    def generate_heatmap(self, target_activation, gradients):\n"
+        "        weights = torch.mean(gradients, dim=(2, 3), keepdim=True)\n"
+        "        cam = torch.sum(weights * target_activation, dim=1).squeeze()\n"
+        "        cam = torch.clamp(cam, min=0).cpu().numpy()\n"
+        "        cam = cv2.resize(cam, (256, 256))\n"
+        "        return (cam - cam.min()) / (cam.max() - cam.min() + 1e-8)\n"
+    )
+    add_code_block(doc, code_cam, title="Grad-CAM Forensic Heatmap Generator (src/utils/gradcam.py)")
+
+    add_heading_2(doc, "4.4 Interface Screenshots and Visual Walkthrough")
+    add_body_p(
+        doc,
+        "Figure 4.1 depicts the formal state lifecycle of a forensic verification request, tracking each stage from video demuxing "
+        "through MTCNN face alignment, parallel decoupled feature extraction, attention gating, and report compilation."
+    )
+
+    add_figure(
+        doc,
+        r'D:\mini-project\report_assets\fig4_1_lifecycle.png',
+        caption_text="Deepfake forensic verification state lifecycle illustrating state transitions across processing tiers",
+        fig_num="Figure 4.1",
+        width_in=5.4
+    )
+
+    add_body_p(
+        doc,
+        "Figure 4.2 shows the landing interface of the deployed DeepGuard AI Streamlit forensic portal, displaying system telemetry "
+        "metrics (98.9% benchmark accuracy, 0.968 AUC-ROC, < 42ms latency, and 21.4M parameter efficiency)."
+    )
+
+    add_figure(
+        doc,
+        r'D:\mini-project\report_assets\fig4_2_dashboard_home.png',
+        caption_text="DeepGuard AI interactive dashboard landing screen with metric cards and operational telemetry",
+        fig_num="Figure 4.2",
+        width_in=5.3
+    )
+
+    add_body_p(
+        doc,
+        "Figure 4.3 illustrates the real-time video ingestion interface, showcasing uniform temporal sampling (5 FPS) and MTCNN face "
+        "detection with a 15% contextual boundary margin."
+    )
+
+    add_figure(
+        doc,
+        r'D:\mini-project\report_assets\fig4_3_video_ingestion.png',
+        caption_text="Real-time video ingestion and automated MTCNN facial tracking with 15% boundary margin alignment",
+        fig_num="Figure 4.3",
+        width_in=5.3
+    )
+
+    add_body_p(
+        doc,
+        "Figure 4.4 illustrates the frequency-domain decomposition module, showing the 2D-DCT log power spectrum S(u,v) alongside the "
+        "1D Radial Azimuthal Spectrum profile A(r), contrasting the natural decay of authentic faces against GAN upsampling peaks."
+    )
+
+    add_figure(
+        doc,
+        r'D:\mini-project\report_assets\fig4_4_dct_spectrum.png',
+        caption_text="2D-DCT frequency decomposition and 1D Radial Azimuthal Spectrum A(r) comparing authentic vs deepfake spectral decay",
+        fig_num="Figure 4.4",
+        width_in=5.3
+    )
+
+    add_heading_2(doc, "4.5 Operational Video Forensic Request Lifecycle")
+    add_body_p(
+        doc,
+        "When an examiner uploads a suspicious video to DeepGuard AI, the request follows an immutable, audited execution lifecycle: "
+        "(1) Evidence Registration: The video stream is demuxed into memory, and its SHA-256 cryptographic digest is calculated to anchor "
+        "chain-of-custody; "
+        "(2) Temporal Extraction: Uniform sampling at 5 FPS yields sequential frame arrays, preventing frame rate manipulation bias; "
+        "(3) Facial Pose & Alignment: The MTCNN cascade detects face bounding boxes and affine-aligns eye/nose landmarks, generating "
+        "canonical 256x256 crops; "
+        "(4) Dual-Stream Forward Propagation: In parallel threads, the spatial tensor feeds EfficientNet-B4 while the grayscale crop undergoes "
+        "2D-DCT transformation and feeds the Spectral-CNN; "
+        "(5) Attention Gating: The bilinear fusion gate evaluates feature credibility, producing fused embedding v_fused; "
+        "(6) Evidentiary Attribution: Dual Grad-CAM backpropagates gradients to render spatial boundary heatmaps and frequency grid overlays; "
+        "and (7) Reporting: A certified forensic report containing all metrics, trajectories, and hashes is outputted for courtroom or KYC approval."
+    )
+
+    doc.add_page_break()

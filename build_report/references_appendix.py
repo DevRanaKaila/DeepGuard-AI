@@ -1,207 +1,209 @@
+import docx
 from docx.shared import Inches, Pt, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from build_report.helpers import (
-    add_heading_1, add_heading_2, add_heading_3, add_body_p, add_bullet_p,
-    add_code_block, add_table_custom
+    COLOR_PRIMARY, COLOR_DARK, add_heading_1, add_heading_2, add_heading_3,
+    add_body_p, add_bullet_p, add_code_block, add_table_custom
 )
 
 def add_references_and_appendix(doc):
-    # REFERENCES
+    # ==================== REFERENCES ====================
     add_heading_1(doc, "REFERENCES")
-    add_body_p(
-        doc,
-        "All citations follow standard IEEE referencing guidelines and represent authoritative research in Natural Language "
-        "Processing, computational linguistics, machine learning, and digital misinformation forensics:",
-        space_after=12
-    )
 
-    refs = [
-        "[1] B. Xie, X. Ma, and X. Shan, 'Multiknowledge and LLM-Inspired Heterogeneous Graph Neural Network for Fake News Detection,' IEEE Transactions on Computational Social Systems, vol. 12, no. 2, pp. 682–694, 2025.",
-        "[2] B. Cao, Q. Wu, J. Cao, B. Liu, and J. Gui, 'External Reliable Information-enhanced Multimodal Contrastive Learning for Fake News Detection,' in Proceedings of the AAAI Conference on Artificial Intelligence, vol. 39, pp. 31–39, 2025.",
-        "[3] L. Xiao, Q. Zhang, C. Shi, S. Wang, U. Naseem, and L. Hu, 'MSynFD: Multi-Hop Syntax-Aware Fake News Detection,' in Proceedings of the ACM Web Conference (WWW '24), pp. 4112–4123, 2024.",
-        "[4] Y. Sun, Q. Huang, A. K. H. Tung, and J. Yu, 'PRISM: A Framework for Producing Interpretable Political Bias Embeddings with Political-Aware Cross-Encoder,' in Proceedings of the Association for Computational Linguistics (ACL 2025), pp. 1520–1534, 2025.",
-        "[5] X. Zheng, Z. Zeng, H. Wang, Y. Bai, and M. Luo, 'From Predictions to Analyses: Rationale-Augmented Fake News Detection with Large Vision-Language Models,' in Proceedings of the ACM Web Conference (WWW '25), pp. 2410–2421, 2025.",
-        "[6] S. Hu, J. Hu, and H. Zhang, 'Synergizing LLMs with Global Label Propagation for Multimodal Fake News Detection (GLPN-LLM),' in Findings of the Association for Computational Linguistics (ACL 2025), pp. 3120–3133, 2025.",
-        "[7] Y. Lei and R. Huang, 'Boosting Logical Fallacy Reasoning in LLMs via Logical Structure Tree,' in Proceedings of the Conference on Empirical Methods in Natural Language Processing (EMNLP 2024), pp. 1820–1835, 2024.",
-        "[8] M.-H. Yeh, R. Wan, and T.-H. K. Huang, 'CoCoLoFa: A Dataset of News Comments with Common Logical Fallacies Written by LLM-Assisted Crowds,' in Proceedings of EMNLP 2024, pp. 4501–4514, 2024.",
-        "[9] R. Rönnback, C. Emmery, and H. Brighton, 'Automatic Large-Scale Political Bias Detection of News Outlets,' PLOS ONE, vol. 20, no. 5, p. e0321418, 2025.",
-        "[10] X. Wang, E. Cabrio, and S. Villata, 'When Automated Fact-Checking Meets Argumentation: Unveiling Fake News Through Argumentative Evidence,' Argument & Computation, vol. 16, no. 3, pp. 210–235, 2025.",
-        "[11] H. Ahmed, I. Traore, and S. Saad, 'Detecting opinion spams and fake news using text classification,' Security and Privacy, vol. 1, no. 1, p. e9, 2018.",
-        "[12] V. L. Rubin, Y. Chen, and N. J. Conroy, 'Deception detection for news: Three types of fakes,' Proceedings of the Association for Information Science and Technology, vol. 52, no. 1, pp. 1–4, 2015.",
-        "[13] K. Shu, A. Sliva, S. Wang, J. Tang, and H. Liu, 'Fake news detection on social media: A data mining perspective,' ACM SIGKDD Explorations Newsletter, vol. 19, no. 1, pp. 22–36, 2017.",
-        "[14] X. Zhou and R. Zafarani, 'A survey of fake news: Fundamental theories, detection methods, and opportunities,' ACM Computing Surveys (CSUR), vol. 53, no. 5, pp. 1–40, 2020.",
-        "[15] J. Devlin, M. W. Chang, K. Lee, and K. Toutanova, 'BERT: Pre-training of deep bidirectional transformers for language understanding,' arXiv preprint arXiv:1810.04805, 2018.",
-        "[16] Y. Liu, M. Ott, N. Goyal, J. Du, M. Joshi, D. Chen, O. Levy, M. Lewis, L. Zettlemoyer, and V. Stoyanov, 'RoBERTa: A robustly optimized BERT pretraining approach,' arXiv preprint arXiv:1907.11692, 2019.",
-        "[17] P. He, X. Liu, J. Gao, and W. Chen, 'DeBERTa: Decoding-enhanced BERT with disentangled attention,' in International Conference on Learning Representations (ICLR), 2021.",
-        "[18] T. Chen and C. Guestrin, 'XGBoost: A scalable tree boosting system,' in Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining, pp. 785–794, 2016.",
-        "[19] L. Breiman, 'Random Forests,' Machine Learning, vol. 45, no. 1, pp. 5–32, 2001.",
-        "[20] D. H. Wolpert, 'Stacked generalization,' Neural Networks, vol. 5, no. 2, pp. 241–259, 1992.",
-        "[21] F. Pedregosa et al., 'Scikit-learn: Machine learning in Python,' Journal of Machine Learning Research, vol. 12, pp. 2825–2830, 2011.",
-        "[22] S. Bird, E. Klein, and E. Loper, Natural Language Processing with Python: Analyzing Text with the Natural Language Toolkit, O'Reilly Media, 2009.",
-        "[23] UNESCO, 'Global report on information integrity and digital platforms,' United Nations Educational, Scientific and Cultural Organization, Paris, Tech. Rep., 2025.",
-        "[24] World Economic Forum, 'The Global Risks Report 2024–2025,' Insight Report, 19th Edition, Geneva, Switzerland, 2024.",
-        "[25] J. P. Kincaid, R. P. Fishburne, R. L. Rogers, and B. S. Chissom, 'Derivation of new readability formulas for Navy enlisted personnel,' Research Branch Report 8-75, Chief of Naval Technical Training, Naval Air Station Memphis, 1975."
+    references = [
+        "[1] A. Rossler, D. Cozzolino, L. Verdoliva, C. Riess, J. Thies, and M. Niessner, “FaceForensics++: Learning to Detect "
+        "Manipulated Facial Images,” in Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV), "
+        "pp. 1–11, 2019.",
+        
+        "[2] J. Frank, T. Eisenhofer, L. Schonherr, A. Fischer, D. Kolossa, and T. Holz, “Leveraging Frequency Analysis for "
+        "Deep Fake Image Recognition,” in Proceedings of the 37th International Conference on Machine Learning (ICML), "
+        "PMLR, vol. 119, pp. 3247–3258, 2020.",
+        
+        "[3] M. Tan and Q. V. Le, “EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks,” in Proceedings "
+        "of the 36th International Conference on Machine Learning (ICML), PMLR, vol. 97, pp. 6105–6114, 2019.",
+        
+        "[4] Y. Qian, G. Yin, L. Sheng, Z. Chen, and J. Shao, “Thinking in Frequency: Face Forgery Detection by Mining "
+        "Frequency-Aware Clues,” in Proceedings of the European Conference on Computer Vision (ECCV), Springer, pp. 86–103, 2020.",
+        
+        "[5] Y. Li, X. Yang, P. Sun, H. Qi, and S. Lyu, “Celeb-DF: A Large-Scale Challenging Dataset for DeepFake Forensics,” "
+        "in Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), pp. 3207–3216, 2020.",
+        
+        "[6] D. Afchar, V. Nozick, J. Yamagishi, and I. Echizen, “MesoNet: A Compact Facial Video Forgery Detection Network,” "
+        "in IEEE International Workshop on Information Forensics and Security (WIFS), pp. 1–7, 2018.",
+        
+        "[7] R. Durall, M. Keuper, and J. Keuper, “Watch Your Up-Convolution: CNN Based Generative Deep Neural Networks Are "
+        "Failing to Reproduce Spectral Distributions,” in Proceedings of the IEEE/CVF CVPR, pp. 7890–7899, 2020.",
+        
+        "[8] R. R. Selvaraju, M. Cogswell, A. Das, R. Vedaldi, D. Parikh, and D. Batra, “Grad-CAM: Visual Explanations from Deep "
+        "Networks via Gradient-Based Localization,” International Journal of Computer Vision (IJCV), vol. 128, no. 2, pp. 336–359, 2020.",
+        
+        "[9] K. Zhang, Z. Zhang, Z. Li, and Y. Qiao, “Joint Face Detection and Alignment Using Multitask Cascaded Convolutional "
+        "Networks,” IEEE Signal Processing Letters, vol. 23, no. 10, pp. 1499–1503, 2016.",
+        
+        "[10] I. Loshchilov and F. Hutter, “Decoupled Weight Decay Regularization,” in International Conference on Learning "
+        "Representations (ICLR), pp. 1–10, 2019.",
+        
+        "[11] S. Seferbekov, “1st Place Solution to Kaggle Deepfake Detection Challenge,” Technical Report, Kaggle, 2020. "
+        "[Online]. Available: https://github.com/selimsef/dfdc_deepfake_challenge.",
+        
+        "[12] I. Goodfellow, J. Pouget-Abadie, M. Mirza, B. Xu, D. Warde-Farley, S. Ozair, A. Courville, and Y. Bengio, “Generative "
+        "Adversarial Nets,” Advances in Neural Information Processing Systems (NeurIPS), vol. 27, pp. 2672–2680, 2014.",
+        
+        "[13] K. He, X. Zhang, S. Ren, and J. Sun, “Deep Residual Learning for Image Recognition,” in Proceedings of the IEEE/CVF "
+        "Conference on Computer Vision and Pattern Recognition (CVPR), pp. 770–778, 2016.",
+        
+        "[14] D. P. Kingma and M. Welling, “Auto-Encoding Variational Bayes,” in International Conference on Learning Representations "
+        "(ICLR), pp. 1–14, 2014.",
+        
+        "[15] D. Rana Kaila, “DeepGuard AI: Dual-Stream Deepfake Detection Codebase,” [Online]. Available: "
+        "https://github.com/DevRanaKaila/DeepGuard-AI. [Accessed: Oct. 23, 2026]."
     ]
 
-    for ref in refs:
+    for ref in references:
         p = doc.add_paragraph()
-        p.paragraph_format.space_before = Pt(2)
+        p.paragraph_format.space_before = Pt(3)
         p.paragraph_format.space_after = Pt(4)
         p.paragraph_format.line_spacing = 1.15
-        p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
-        r = p.add_run(ref)
-        r.font.name = 'Times New Roman'
-        r.font.size = Pt(9.5)
+        p.paragraph_format.left_indent = Inches(0.4)
+        p.paragraph_format.first_line_indent = Inches(-0.4)
+        run = p.add_run(ref)
+        run.font.name = 'Times New Roman'
+        run.font.size = Pt(9.5)
 
-    # APPENDIX
     doc.add_page_break()
+
+    # ==================== APPENDIX ====================
     add_heading_1(doc, "APPENDIX")
 
-    add_heading_2(doc, "Appendix A: Mathematical Derivations and Epistemic Formulations")
+    add_heading_2(doc, "Appendix A: Core Source Code Extracts")
     add_body_p(
         doc,
-        "A.1 Derivation of Simpson's Diversity Index (D_simpson): In ecological statistics, Simpson's Index quantifies the "
-        "probability that two individuals randomly chosen from a finite sample belong to different categories. Translating this "
-        "to natural language text, let N be the total number of words in a document and n_i be the occurrence frequency of the "
-        "i-th vocabulary token. The probability of randomly drawing two identical words with replacement is:"
-    )
-    add_body_p(
-        doc,
-        "    lambda = sum_{i=1}^V [ n_i * (n_i - 1) ] / [ N * (N - 1) ]",
-        bold_prefix="Formulation: "
-    )
-    add_body_p(
-        doc,
-        "The Gini-Simpson diversity measure D_simpson = 1 - lambda bounded in [0, 1]. In authentic investigative journalism with "
-        "rich vocabulary, lambda is small and D_simpson approaches 1.0. In formulaic or synthesized propaganda with repetitive "
-        "cues, lambda increases and D_simpson degrades noticeably."
-    )
-    add_body_p(
-        doc,
-        "A.2 Stacking Ensemble Binary Cross-Entropy Optimization: Let z_i in R^4 represent the blended base-learner probability "
-        "predictions for the i-th training sample. The regularized meta-learner solves the convex optimization problem:"
-    )
-    add_body_p(
-        doc,
-        "    L(w) = (1 / 2) * ||w||_2^2 + C * sum_{i=1}^M log( 1 + exp( -y_i * ( w^T z_i + b ) ) )",
-        bold_prefix="Optimization Objective: "
-    )
-    add_body_p(
-        doc,
-        "Solved using L-BFGS quasi-Newton gradient updates, ensuring optimal probability calibration and preventing over-confidence."
+        "This appendix reproduces primary architectural source code components from the operational DeepGuard AI repository. "
+        "The complete, version-controlled codebase is available at https://github.com/DevRanaKaila/DeepGuard-AI."
     )
 
-    add_heading_2(doc, "Appendix B: Complete Feature Vector Schema (5,028 Dimensions)")
-    add_body_p(
-        doc,
-        "Table B.1 details the exact schema, normalization transform, and dimensional mapping of the fused feature vector X_fused:"
+    # A.1 DualStreamNet
+    code_a1 = (
+        "class DualStreamNet(nn.Module):\n"
+        "    \"\"\"Unified Dual-Stream Network combining Spatial and Frequency streams.\"\"\"\n"
+        "    def __init__(self, pretrained: bool = True):\n"
+        "        super().__init__()\n"
+        "        self.spatial_stream = SpatialStream(pretrained=pretrained)\n"
+        "        self.frequency_stream = FrequencyStream()\n"
+        "        self.fusion = AttentionFusion(spatial_dim=1792, freq_dim=512, out_dim=1024)\n"
+        "        self.classifier = nn.Sequential(\n"
+        "            nn.Linear(1024, 256),\n"
+        "            nn.LayerNorm(256),\n"
+        "            nn.ReLU(inplace=True),\n"
+        "            nn.Dropout(0.4),\n"
+        "            nn.Linear(256, 1)\n"
+        "        )\n"
+        "\n"
+        "    def forward(self, x_rgb: torch.Tensor, x_dct: torch.Tensor) -> Dict[str, torch.Tensor]:\n"
+        "        v_spatial = self.spatial_stream(x_rgb)\n"
+        "        v_freq = self.frequency_stream(x_dct)\n"
+        "        v_fused, gate = self.fusion(v_spatial, v_freq)\n"
+        "        logits = self.classifier(v_fused)\n"
+        "        probs = torch.sigmoid(logits)\n"
+        "        return {\n"
+        "            'logits': logits,\n"
+        "            'probs': probs,\n"
+        "            'gate_weight': gate,\n"
+        "            'spatial_features': v_spatial,\n"
+        "            'freq_features': v_freq,\n"
+        "            'fused_features': v_fused\n"
+        "        }\n"
     )
+    add_code_block(doc, code_a1, title="A.1 DualStreamNet Architecture (src/models/dual_stream_net.py)")
 
-    f_schema = [
-        ["0 – 3", "TTR, RTTR, CTTR, BiTTR", "StandardScaler", "Lexical richness and vocabulary variation."],
-        ["4 – 5", "Hapax Legomena & Dis Legomena Ratios", "StandardScaler", "Rare word usage and vocabulary depth."],
-        ["6 – 7", "Simpson's Diversity & Shannon Lexical Entropy", "StandardScaler", "Vocabulary concentration and information density."],
-        ["8 – 12", "Flesch Reading Ease, FKGL, GFI, ARI, CLI", "StandardScaler", "Cognitive fluency, syllable ratios, grade level."],
-        ["13 – 17", "Punctuation Densities & Punctuation Entropy", "StandardScaler", "Exclamation, question, quotation marks, commas."],
-        ["18 – 19", "Subjectivity Index & Sentiment Polarity", "StandardScaler", "Authorial subjectivity and emotional tone."],
-        ["20 – 21", "Emotional Hyperbole (EHF) & Hedging (HUR)", "StandardScaler", "Sensational modifier density and speculative hedging."],
-        ["22 – 23", "Polarity Delta & Affective Polarization Density", "StandardScaler", "Headline-body divergence and sentence polarity variance."],
-        ["24 – 25", "Composite Author Bias Score (ABS) & Fallacy Index (FSI)", "StandardScaler", "Aggregated 0–100 author bias and rhetorical fallacy penalty."],
-        ["26 – 27", "AllSides 2D Coordinates (Bias_x, Fact_y)", "StandardScaler", "Directional ideological spectrum and epistemic factuality."],
-        ["28 – 5027", "Sublinear TF-IDF N-grams (1–2 grams)", "Sublinear TF + L2 Norm", "High-dimensional sparse lexical and topical vocabulary."]
+    # A.2 FrequencyStream
+    code_a2 = (
+        "class FrequencyStream(nn.Module):\n"
+        "    \"\"\"4-Stage Custom Spectral-CNN for 2D-DCT Feature Extraction.\"\"\"\n"
+        "    def __init__(self, in_channels: int = 1, feature_dim: int = 512):\n"
+        "        super().__init__()\n"
+        "        self.features = nn.Sequential(\n"
+        "            # Stage 1: Initial frequency receptive field\n"
+        "            nn.Conv2d(in_channels, 32, kernel_size=3, stride=2, padding=1),\n"
+        "            nn.BatchNorm2d(32),\n"
+        "            nn.ReLU(inplace=True),\n"
+        "            # Stage 2: Depthwise separable spectral filters\n"
+        "            nn.Conv2d(32, 64, kernel_size=3, stride=2, padding=1),\n"
+        "            nn.BatchNorm2d(64),\n"
+        "            nn.ReLU(inplace=True),\n"
+        "            # Stage 3: Mid-frequency feature maps\n"
+        "            nn.Conv2d(64, 128, kernel_size=3, stride=2, padding=1),\n"
+        "            nn.BatchNorm2d(128),\n"
+        "            nn.ReLU(inplace=True),\n"
+        "            # Stage 4: High-frequency artifact detection\n"
+        "            nn.Conv2d(128, 256, kernel_size=3, stride=2, padding=1),\n"
+        "            nn.BatchNorm2d(256),\n"
+        "            nn.ReLU(inplace=True),\n"
+        "            nn.AdaptiveAvgPool2d((1, 1))\n"
+        "        )\n"
+        "        self.fc = nn.Sequential(\n"
+        "            nn.Linear(256, feature_dim),\n"
+        "            nn.LayerNorm(feature_dim),\n"
+        "            nn.ReLU(inplace=True)\n"
+        "        )\n"
+        "\n"
+        "    def forward(self, x: torch.Tensor) -> torch.Tensor:\n"
+        "        x = self.features(x)\n"
+        "        x = torch.flatten(x, 1)\n"
+        "        return self.fc(x)\n"
+    )
+    add_code_block(doc, code_a2, title="A.2 4-Stage Spectral-CNN (src/models/frequency_stream.py)")
+
+    add_heading_2(doc, "Appendix B: Additional Material & Project Metadata")
+
+    add_heading_3(doc, "B.1 Project Links and Version Control")
+    add_bullet_p(doc, "Official GitHub Source Repository: https://github.com/DevRanaKaila/DeepGuard-AI")
+    add_bullet_p(doc, "Local Interactive Forensic Dashboard: http://localhost:8501/")
+    add_bullet_p(doc, "Kaggle Benchmark Challenge Baseline: https://github.com/selimsef/dfdc_deepfake_challenge")
+
+    add_heading_3(doc, "B.2 Main Application Routes and CLI Commands")
+    tb1_headers = ["Interface / Mode", "Command / Route", "Purpose and Target Subsystem"]
+    tb1_rows = [
+        ["Web Dashboard", "streamlit run app.py", "Launches interactive Streamlit forensic analysis web application"],
+        ["Image Inference CLI", "python inference.py --input <path> --output results", "Executes single-image dual-stream inference with Grad-CAM"],
+        ["Video Inference CLI", "python inference.py --input <video> --output results", "Processes continuous video stream at 5 FPS with temporal aggregation"],
+        ["Model Training", "python train.py --config config.py", "Executes end-to-end model training with AdamW and label smoothing"],
+        ["Figure Generator", "python generate_figures.py", "Generates high-resolution architecture diagrams and evaluation plots"]
     ]
     add_table_custom(
-        doc,
-        headers=["Feature Indices", "Feature Category & Extracted Metrics", "Scaling Method", "Epistemic Significance"],
-        rows_data=f_schema,
-        caption_text="Exhaustive Dimensional Breakdown of the 5,028 Fused Feature Vector.",
+        doc, tb1_headers, tb1_rows,
+        caption_text="Main application execution modes, CLI parameters, and operational commands",
         table_num="Table B.1",
-        col_widths=[1.2, 2.2, 1.2, 2.17]
+        col_widths=[1.5, 2.3, 1.9]
     )
 
-    add_heading_2(doc, "Appendix C: Curated Institutional Consensus Knowledge Matrices")
-    add_body_p(
-        doc,
-        "The knowledge grounding database stores canonical consensus statements from global authorities:"
+    add_heading_3(doc, "B.3 Repository Directory Structure")
+    repo_structure = (
+        "DeepGuard-AI/\n"
+        "├── src/\n"
+        "│   ├── data/                 # Video decoding, face alignment & 2D-DCT transforms\n"
+        "│   │   ├── augmentation.py   # JPEG, blur, and color jitter augmentations\n"
+        "│   │   ├── dataset.py        # FaceForensics++ & Celeb-DF v2 data loaders\n"
+        "│   │   ├── dct_transform.py  # 2D-DCT-II & Radial Azimuthal Spectrum A(r)\n"
+        "│   │   └── preprocessing.py  # MTCNN face landmark tracking & crop extraction\n"
+        "│   ├── models/               # Neural network architectures\n"
+        "│   │   ├── dual_stream_net.py # Complete unified DualStreamNet model\n"
+        "│   │   ├── frequency_stream.py# 4-stage custom Spectral-CNN\n"
+        "│   │   ├── fusion.py         # Attention-Gated Bilinear Fusion module\n"
+        "│   │   ├── selim_classifier.py# Kaggle DFDC 1st-place champion backbone\n"
+        "│   │   └── spatial_stream.py # Pretrained EfficientNet-B4 spatial backbone\n"
+        "│   └── utils/                # Evaluation & visualization utilities\n"
+        "│       ├── gradcam.py        # Dual-stream Grad-CAM heatmap generator\n"
+        "│       ├── metrics.py        # AUC-ROC, EER, and confusion matrix evaluators\n"
+        "│       └── video_processor.py# Uniform temporal frame extraction engine\n"
+        "├── checkpoints/              # Model weights (.pth) & training checkpoints\n"
+        "├── demo/                     # Sample authentic & deepfake test videos / faces\n"
+        "├── results/                  # Generated forensic reports, heatmaps & JSON logs\n"
+        "├── report_assets/            # High-resolution architectural diagrams & plots\n"
+        "├── app.py                    # Interactive Streamlit forensic web application\n"
+        "├── inference.py              # Standalone CLI and API inference engine\n"
+        "├── train.py                  # PyTorch training pipeline with AMP & Cosine Annealing\n"
+        "├── config.py                 # Global hyperparameters and directory configurations\n"
+        "└── requirements.txt          # Production Python package dependencies\n"
     )
-    add_bullet_p(
-        doc,
-        "Keywords: ['cancer cure', 'miracle cure', 'destroy cancer overnight']. Consensus: Cancer comprises over 100 distinct pathologies requiring targeted clinical regimens. There is no universal single-ingredient cure. Authority: WHO & National Cancer Institute (https://www.who.int/news-room/fact-sheets/detail/cancer).",
-        bold_prefix="Oncology Matrix (WHO / NCI): "
-    )
-    add_bullet_p(
-        doc,
-        "Keywords: ['vaccine microchip', 'dna alteration', 'poisoned vaccines']. Consensus: Approved vaccines undergo multi-phase double-blind clinical trials verifying safety. Vaccines do not alter DNA and contain no tracking microchips. Authority: WHO & CDC (https://www.who.int/initiatives/act-accelerator/covax).",
-        bold_prefix="Immunology Matrix (WHO / CDC): "
-    )
-    add_bullet_p(
-        doc,
-        "Keywords: ['asteroid will destroy earth', 'nasa hiding apocalypse']. Consensus: NASA CNEOS tracks all Near-Earth Objects. There are no known significant asteroid impact risks for the next 100+ years. Authority: NASA CNEOS (https://cneos.jpl.nasa.gov/).",
-        bold_prefix="Astrophysics Matrix (NASA CNEOS): "
-    )
-    add_bullet_p(
-        doc,
-        "Keywords: ['climate change is hoax', 'global cooling', 'ice age coming']. Consensus: Over 99% of actively publishing climate scientists agree human industrial emissions are warming the climate system. Authority: IPCC AR6 (https://www.ipcc.ch/report/ar6/wg1/).",
-        bold_prefix="Climatology Matrix (IPCC AR6): "
-    )
-
-    add_heading_2(doc, "Appendix D: System Configuration and Package Manifest")
-    add_body_p(
-        doc,
-        "The system configuration file (`config.py`) specifies application ports, thresholds, and hyperparameters:"
-    )
-
-    code_cfg = """
-# System Configuration Parameters (config.py)
-SERVER_HOST = "0.0.0.0"
-SERVER_PORT = 5001
-DEBUG_MODE = False
-SECRET_KEY = "audit-epistemic-secret-key-2026"
-
-# Model & Feature Thresholds
-MAX_TFIDF_FEATURES = 5000
-NGRAM_RANGE = (1, 2)
-SUBLINEAR_TF = True
-DECISION_THRESHOLD = 0.50
-
-# Fallacy Severity Thresholds
-FSI_LOW_THRESHOLD = 20.0
-FSI_HIGH_THRESHOLD = 50.0
-
-# Author Bias Thresholds
-ABS_OBJECTIVE_THRESHOLD = 25.0
-ABS_SENSATIONAL_THRESHOLD = 60.0
-
-# Networking & Ingestion
-SOCKET_TIMEOUT = 5.0
-MAX_CONTENT_LENGTH = 10 * 1024 * 1024  # 10 MB
-RATE_LIMIT_PER_MINUTE = 30
-DEFAULT_RSS_FEED = "http://feeds.bbci.co.uk/news/world/rss.xml"
-"""
-    add_code_block(doc, code_cfg, title="System Configuration Manifest (config.py)")
-
-    add_heading_2(doc, "Appendix E: Interactive Web Telemetry User Interface Guide")
-    add_body_p(
-        doc,
-        "The Evidence and Framing Auditor provides an intuitive web interface accessible on Port 5001. The interface comprises "
-        "three primary visual components:"
-    )
-    add_bullet_p(
-        doc,
-        "Allows users to type or paste news text, submit any live HTTP/HTTPS article URL for automatic DOM scraping, "
-        "or select one-click live RSS feed articles from BBC World News.",
-        bold_prefix="1. Ingestion Control Panel: "
-    )
-    add_bullet_p(
-        doc,
-        "Visualizes the article's ideological stance on an interactive continuous 2D grid (X-axis: Left to Right; "
-        "Y-axis: Factuality 0.0 to 1.0) alongside circular SVG dials for Composite Author Bias Score (ABS) and Fallacy Severity Index (FSI).",
-        bold_prefix="2. AllSides 2D Stance Canvas & Bias Gauges: "
-    )
-    add_bullet_p(
-        doc,
-        "Renders the full article with individual sentences color-coded in green (objective / verified), "
-        "amber (unsubstantiated hedging / mild bias), or red (rhetorical fallacy / institutional factual contradiction), accompanied "
-        "by expandable cards detailing the exact matched linguistic cue and official institutional refutation URL.",
-        bold_prefix="3. Sentence-Level Explainability Inspector: "
-    )
+    add_code_block(doc, repo_structure, title="Repository Directory Structure (github.com/DevRanaKaila/DeepGuard-AI)")

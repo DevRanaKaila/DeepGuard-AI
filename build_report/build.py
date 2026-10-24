@@ -31,42 +31,42 @@ def setup_page_geometry(section):
     section.bottom_margin = Inches(1.0)
 
 def main():
-    print("=== BUILDING MINI PROJECT REPORT ===")
+    print("=== BUILDING DEEPGUARD AI MINI PROJECT REPORT ===")
     doc = docx.Document()
 
     # SECTION 1: Preliminary Pages (No Header, No Footer)
     s1 = doc.sections[0]
     setup_page_geometry(s1)
 
-    print("Adding Cover Page...")
+    print("1/10 Adding Cover Page...")
     add_cover_page(doc)
 
-    print("Adding Certificate...")
+    print("2/10 Adding Certificate...")
     add_certificate(doc)
 
-    print("Adding Declaration...")
+    print("3/10 Adding Declaration...")
     add_declaration(doc)
 
-    print("Adding Acknowledgement...")
+    print("4/10 Adding Acknowledgement...")
     add_acknowledgement(doc)
 
-    print("Adding Abstract...")
+    print("5/10 Adding Abstract...")
     add_abstract(doc)
 
-    print("Adding Table of Contents...")
+    print("6/10 Adding Table of Contents...")
     add_table_of_contents(doc)
 
-    print("Adding List of Figures...")
+    print("7/10 Adding List of Figures...")
     add_list_of_figures(doc)
 
-    print("Adding List of Tables...")
+    print("8/10 Adding List of Tables...")
     add_list_of_tables(doc)
 
-    print("Adding List of Abbreviations...")
+    print("9/10 Adding List of Abbreviations...")
     add_list_of_abbreviations(doc)
 
     # SECTION 2: Chapter Pages Onward (Header and Footer Active)
-    print("Configuring Section 2 (Chapter Pages Onward)...")
+    print("10/10 Configuring Section 2 (Chapter Pages Onward)...")
     s2 = doc.add_section(docx.enum.section.WD_SECTION.NEW_PAGE)
     setup_page_geometry(s2)
 
@@ -78,12 +78,12 @@ def main():
     pgNumType = parse_xml(f'<w:pgNumType {nsdecls("w")} w:start="1"/>')
     s2._sectPr.append(pgNumType)
 
-    # HEADER: Right-aligned "Mini Project Report"
+    # HEADER: Right-aligned "Dual-Stream Deepfake Video Detection | Mini Project Report"
     hp = s2.header.paragraphs[0]
     hp.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-    hrun = hp.add_run("Mini Project Report")
+    hrun = hp.add_run("Dual-Stream Deepfake Video Detection  |  Mini Project Report")
     hrun.font.name = 'Times New Roman'
-    hrun.font.size = Pt(10)
+    hrun.font.size = Pt(9.5)
     hrun.font.italic = True
     hrun.font.color.rgb = RGBColor(113, 128, 150)
 
@@ -100,15 +100,13 @@ def main():
     c1.width = Inches(3.77)
     c2.width = Inches(1.0)
 
-    # Center cell: Department Name
     p_dept = c1.paragraphs[0]
     p_dept.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r_dept = p_dept.add_run("Department of Computer Science & Engineering")
+    r_dept = p_dept.add_run("LIET, Greater Noida — Dept. of CSE (AIML)")
     r_dept.font.name = 'Times New Roman'
     r_dept.font.size = Pt(9)
     r_dept.font.color.rgb = RGBColor(113, 128, 150)
 
-    # Right cell: Page Number (PAGE field)
     p_num = c2.paragraphs[0]
     p_num.alignment = WD_ALIGN_PARAGRAPH.RIGHT
     r_num = p_num.add_run()
@@ -124,61 +122,55 @@ def main():
     r_num._r.append(fldChar2)
     r_num._r.append(fldChar3)
 
-    # ADD CHAPTERS
-    print("Adding Chapter 1...")
+    print("Compiling Chapter 1...")
     add_chapter_1(doc)
 
-    print("Adding Chapter 2...")
-    doc.add_page_break()
+    print("Compiling Chapter 2...")
     add_chapter_2(doc)
 
-    print("Adding Chapter 3...")
-    doc.add_page_break()
+    print("Compiling Chapter 3...")
     add_chapter_3(doc)
 
-    print("Adding Chapter 4...")
-    doc.add_page_break()
+    print("Compiling Chapter 4...")
     add_chapter_4(doc)
 
-    print("Adding Chapter 5...")
-    doc.add_page_break()
+    print("Compiling Chapter 5...")
     add_chapter_5(doc)
 
-    print("Adding Chapter 6...")
-    doc.add_page_break()
+    print("Compiling Chapter 6...")
     add_chapter_6(doc)
 
-    print("Adding Chapter 7...")
-    doc.add_page_break()
+    print("Compiling Chapter 7...")
     add_chapter_7(doc)
 
-    print("Adding References & Appendix...")
-    doc.add_page_break()
+    print("Compiling References & Appendix...")
     add_references_and_appendix(doc)
 
-    # Output paths
-    out_docx = os.path.abspath("presentation/Mini_Project_Report_Dev_Rana_Kaila.docx")
-    out_pdf = os.path.abspath("presentation/Mini_Project_Report_Dev_Rana_Kaila.pdf")
+    out_dirs = [r'D:\mini-project\report', r'D:\mini-project\SUBMISSION']
+    for d in out_dirs:
+        os.makedirs(d, exist_ok=True)
+        docx_file = os.path.join(d, 'Mini_Project_Report_Dev_Rana_Kaila.docx')
+        doc.save(docx_file)
+        print(f"Saved DOCX report to: {docx_file}")
 
-    print(f"Saving Word Document: {out_docx}...")
-    doc.save(out_docx)
-    print("DOCX saved successfully!")
-
-    # Convert to PDF via MS Word
-    print("Converting DOCX to PDF via MS Word...")
+    print("Converting to PDF via Word Automation...")
+    import win32com.client
+    word = win32com.client.Dispatch('Word.Application')
+    word.Visible = False
+    word.DisplayAlerts = 0
     try:
-        import win32com.client
-        word = win32com.client.Dispatch("Word.Application")
-        word.Visible = False
-        try:
-            doc_word = word.Documents.Open(out_docx)
-            doc_word.SaveAs(out_pdf, FileFormat=17) # 17 = wdFormatPDF
-            doc_word.Close()
-            print(f"PDF exported successfully to: {out_pdf}!")
-        finally:
-            word.Quit()
-    except Exception as e:
-        print(f"Word PDF conversion failed: {e}")
+        primary_docx = os.path.abspath(r'D:\mini-project\report\Mini_Project_Report_Dev_Rana_Kaila.docx')
+        primary_pdf = os.path.abspath(r'D:\mini-project\report\Mini_Project_Report_Dev_Rana_Kaila.pdf')
+        sub_pdf = os.path.abspath(r'D:\mini-project\SUBMISSION\Mini_Project_Report_Dev_Rana_Kaila.pdf')
 
-if __name__ == "__main__":
+        wb = word.Documents.Open(primary_docx, ReadOnly=True)
+        wb.SaveAs(primary_pdf, FileFormat=17)
+        wb.SaveAs(sub_pdf, FileFormat=17)
+        wb.Close()
+        print(f"Report PDF successfully generated at: {primary_pdf}")
+        print(f"Report PDF copied to submission at: {sub_pdf}")
+    finally:
+        word.Quit()
+
+if __name__ == '__main__':
     main()

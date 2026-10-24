@@ -1,199 +1,191 @@
 from build_report.helpers import (
-    add_heading_1, add_heading_2, add_heading_3, add_body_p, add_bullet_p,
-    add_equation_p, add_figure, add_table_custom
+    add_heading_1, add_heading_2, add_heading_3, add_body_p, add_bullet_p
 )
 
 def add_chapter_1(doc):
     add_heading_1(doc, "CHAPTER 1: INTRODUCTION")
 
-    add_heading_2(doc, "1.1 Background and Societal Motivation")
+    add_heading_2(doc, "1.1 Background and Societal Context")
     add_body_p(
         doc,
-        "In the contemporary digital information ecosystem, the rapid democratization and global interconnectivity of "
-        "social networking architectures, online news aggregators, and decentralized publishing platforms have revolutionized "
-        "how human society consumes, disseminates, and engages with information. However, this frictionless dissemination "
-        "paradigm has simultaneously catalyzed an unprecedented epistemological crisis: the industrialized propagation of "
-        "hyper-partisan disinformation, synthesized deceptive reports, and deliberate epistemic distortions. According to "
-        "foundational empirical risk assessments conducted by UNESCO (2025) and the World Economic Forum Global Risks Report "
-        "(2024–2025), misinformation and digital deception now rank as the single greatest short-term risk to global societal "
-        "stability, eclipsing even conventional macroeconomic volatility and extreme geopolitical turbulence."
+        "The contemporary digital communications landscape has been fundamentally reshaped by exponential breakthroughs "
+        "in deep generative modeling. Over the past five years, the evolution of Generative Adversarial Networks (GANs), "
+        "Variational Autoencoders (VAEs), and Latent Diffusion Models (LDMs) has democratized the synthesis of hyper-realistic "
+        "digital media. Open-source facial manipulation toolsets such as DeepFaceLab, FaceSwap, SimSwap, and modern text-to-video "
+        "diffusion pipelines now allow individuals without specialized computer graphics knowledge to manipulate facial identities, "
+        "fabricate emotional expressions, and synchronize lip movements with synthesized audio in ultra-high resolution. These manipulated "
+        "visual sequences are widely referred to as deepfakes."
     )
     add_body_p(
         doc,
-        "The societal consequences of unchecked digital deception are catastrophic and systemic. In the civic sphere, targeted "
-        "disinformation campaigns systematically erode public confidence in democratic institutions, degrade voter consensus, "
-        "and polarize populations across deep socio-political fault lines. During geopolitical conflicts, belligerents weaponize "
-        "coordinated computational propaganda to manipulate international perceptions and obscure humanitarian atrocities. In the "
-        "realm of public health—exemplified during the COVID-19 pandemic and subsequent global vaccination efforts—fabricated medical "
-        "panaceas, unsubstantiated vaccine microchip conspiracies, and manufactured institutional distrust resulted in direct loss "
-        "of human life and the revival of previously eradicated infectious pathologies. Furthermore, in commercial markets, synthetic "
-        "news releases detailing fabricated corporate insolvencies or fictitious acquisitions have induced flash-crashes, wiping out "
-        "billions of dollars in market capitalization within seconds."
+        "While deep synthesis techniques offer legitimate creative utility across motion picture production, digital education, "
+        "accessible avatar design, and virtual telepresence, their unauthorized weaponization poses an unprecedented existential threat "
+        "to societal trust, democratic integrity, and digital security. Deepfakes have emerged as potent instruments of sophisticated "
+        "social engineering, political disinformation, corporate wire fraud, automated KYC (Know Your Customer) bypass attacks in "
+        "fintech platforms, and targeted non-consensual defamation. As generative decoders increasingly mimic natural optical textures, "
+        "the human perceptual visual system is rendered incapable of discerning authentic recordings from synthetic fabrications, "
+        "reducing manual detection accuracy to near-random chance."
     )
     add_body_p(
         doc,
-        "This crisis has been exponentially intensified by the recent democratization of high-capacity generative artificial "
-        "intelligence, particularly Large Language Models (LLMs) such as OpenAI GPT-4, Meta LLaMA-3, and Google Gemini. "
-        "Historically, fabricated news could often be identified through surface-level artifacts such as blatant spelling errors, "
-        "broken grammatical structures, or crude typographical anomalies. Contemporary generative AI pipelines, however, have "
-        "lowered the marginal cost of producing syntactically flawless, grammatically pristine, and stylistically convincing deceptive "
-        "prose to near zero. Malicious actors can now synthesize thousands of persuasive, tailored disinformation articles in minutes, "
-        "completely overwhelming manual fact-checking organizations and rendering traditional keyword-based blacklists and surface "
-        "heuristics obsolete."
+        "The urgency of establishing reliable digital forensics is heightened by the velocity and scale of social media diffusion. "
+        "Modern content distribution networks compress, downsample, and transmit video streams across millions of devices in seconds. "
+        "In this high-velocity environment, malicious deepfake videos can alter electoral consensus, spark civil unrest, or induce severe "
+        "financial market volatility before traditional human fact-checkers can even initiate verification. Consequently, the development "
+        "of automated, mathematically grounded, compression-resilient, and forensically explainable deep learning detection systems has "
+        "become an urgent priority for modern computer science and cybersecurity."
     )
 
-    add_heading_2(doc, "1.2 The Deception Spectrum & Linguistic Manipulations")
+    add_heading_2(doc, "1.2 Problem Statement")
     add_body_p(
         doc,
-        "Automated veracity assessment cannot be treated as a trivial binary text-classification task. Digital misinformation does "
-        "not operate as an undifferentiated monolith; rather, it manifests across a multifaceted continuum known as the "
-        "Deception Spectrum. Deceptive prose exploits subtle cognitive vulnerabilities through complex rhetorical framing, psychological "
-        "nudging, and contextual manipulation. A rigorous forensic architecture must systematically decompose and identify each "
-        "constituent phenomenon across this spectrum:"
+        "Current digital video forensic systems exhibit severe operational vulnerabilities when deployed outside controlled "
+        "laboratory environments. Existing deepfake detection research suffers from four fundamental bottlenecks:"
     )
     add_bullet_p(
         doc,
-        "Disinformation campaigns deliberately utilize hyperbolic language, inflammatory adjectives, and "
-        "provocative phrasing designed to trigger acute moral outrage, fear, or cognitive panic. Emotional over-saturation impairs "
-        "critical analytical thinking, inducing readers to immediately share deceptive content before evaluating its empirical validity.",
-        bold_prefix="Affective Polarization and Sensationalism: "
+        "Spatial-Domain Compression Vulnerability: Conventional detection models rely predominantly on RGB spatial convolutional "
+        "neural networks (e.g., standard ResNet, VGG, or XceptionNet baselines) that attempt to identify localized visual flaws such "
+        "as boundary blending, skin warping, or lighting inconsistencies. However, when videos undergo standard lossy social media "
+        "compression (H.264/H.265 codecs, downsampling, and color quantization), subtle pixel-level gradient artifacts are destroyed. "
+        "As a result, spatial-only detectors experience catastrophic performance drops of 20% to 35% in accuracy when transitioning "
+        "from raw uncompressed video to high-compression transmission tiers (such as FaceForensics++ c40)."
     )
     add_bullet_p(
         doc,
-        "Fabricated articles frequently rely on invalid rhetorical structures that simulate logical "
-        "coherence while violating deductive validity. These include Ad Hominem character assassinations, False Dilemma dichotomies "
-        "('either you stand with our movement or you support societal collapse'), and Phantom Authority attribution ('anonymous top "
-        "whistleblowers confirm').",
-        bold_prefix="Cognitive Distortions and Rhetorical Fallacies: "
+        "Absence of Systematic Spectral Fingerprinting: Generative decoders universally employ transposed convolutions or nearest-neighbor "
+        "upsampling layers to reconstruct high-resolution facial images from latent vectors. Signal processing theory establishes that "
+        "these upsampling operators leave indelible, periodic grid artifacts and high-frequency discrepancies in the frequency domain. "
+        "Despite this, competition-grade winning architectures—including the 1st-place Kaggle DFDC solution—operate entirely in the spatial "
+        "domain, completely discarding the rich discriminative signal available in orthogonal frequency transforms."
     )
     add_bullet_p(
         doc,
-        "The most pernicious form of contemporary misinformation does not manufacture blatant falsehoods out "
-        "of whole cloth; instead, it selectively quotes authentic statistical figures or scientific excerpts while stripping away "
-        "essential qualifying boundaries, confidence intervals, or foundational context, leading the reader to invalid conclusions.",
-        bold_prefix="Context Stripping and Selective Omission: "
+        "Forensic Opacity and the Black-Box Problem: Deployed deepfake classifiers overwhelmingly function as opaque mathematical black "
+        "boxes that produce an isolated scalar probability score. Without visual attribution demonstrating which specific facial features "
+        "or spectral frequency bands triggered the classification, such models fail the evidentiary standards required for courtroom "
+        "admissibility, regulatory reporting, and legal compliance."
     )
     add_bullet_p(
         doc,
-        "Mainstream reporting often cloaks partisan hostility under the guise of objective journalism. "
-        "Deceptive framing manipulates directional verbs and evaluative modifiers when reporting on specific political figures, "
-        "generating systematic ideological skew that evades keyword filters.",
-        bold_prefix="Target-Stance Ideological Framing: "
+        "Deployment and Usability Gap: Research-grade detection algorithms typically exist as isolated, non-standardized Python command-line "
+        "scripts that require deep technical expertise to configure, preprocess, and execute. Non-expert stakeholders—including forensic "
+        "investigators, compliance officers, and journalists—lack access to interactive, intuitive forensic dashboards capable of real-time "
+        "video ingestion, multi-modal explainability, and automated verification reporting."
     )
-    add_bullet_p(
+    add_body_p(
         doc,
-        "Fabricated narratives frequently disguise speculation as definitive reporting through the "
-        "unsubstantiated accumulation of epistemic hedging phrases ('it is rumored', 'sources claim', 'many believe'), insulating "
-        "the author from direct accountability while implanting unverified claims in public discourse.",
-        bold_prefix="Epistemic Uncertainty and Unsubstantiated Hedging: "
+        "To resolve these interrelated challenges, this project formulates and implements DeepGuard AI: a unified dual-stream forensic "
+        "framework that harmonizes spatial semantic feature extraction (via EfficientNet-B4) with orthogonal 2D Discrete Cosine Transform "
+        "(DCT-II) frequency analysis through an attention-gated bilinear fusion mechanism, providing verifiable Grad-CAM explainability "
+        "and a production-ready interactive web dashboard."
     )
 
-    add_heading_2(doc, "1.3 Problem Statement")
+    add_heading_2(doc, "1.3 Objectives of the Project")
     add_body_p(
         doc,
-        "Despite extensive research into computational fact-checking and automated fake news detection, existing computational "
-        "methodologies exhibit foundational architectural flaws that severely constrain their real-world utility and legal admissibility:"
+        "The primary objective of this project is to architect, evaluate, and deploy a robust, compression-resilient, and "
+        "interpretable deepfake video detection system. The specific technical objectives are as follows:"
     )
     add_bullet_p(
         doc,
-        "Contemporary deep learning detectors predominantly rely on fine-tuned transformer encoders "
-        "(e.g., BERT, RoBERTa, DeBERTa). While these models achieve commendable accuracy on in-distribution academic benchmark "
-        "corpora, they operate as uninterpretable mathematical black boxes. They output a raw probability score (e.g., '0.94 Fake') "
-        "without providing any verifiable linguistic evidence, reasoning traces, or diagnostic attribution. In forensic journalism, "
-        "editorial newsrooms, and regulatory compliance tribunals, opaque probability outputs are inadmissible and practically useless.",
-        bold_prefix="The Forensic Interpretability Chasm: "
+        "Automated Video Preprocessing & Facial Tracking: To implement a robust video demuxing and frame extraction pipeline that "
+        "samples frames at a uniform temporal rate (5 FPS) and applies Multi-task Cascaded Convolutional Networks (MTCNN) to automatically "
+        "detect facial landmarks, execute canonical alignment, and crop facial regions with a 15% contextual boundary margin to capture "
+        "peripheral blending seams."
     )
     add_bullet_p(
         doc,
-        "Transformer-based models heavily exploit spurious lexical correlations and topical shortcuts "
-        "(e.g., associating specific political keywords or controversial topics with deception regardless of actual context). "
-        "Consequently, when evaluated on out-of-distribution news or emerging real-world narratives, their classification accuracy "
-        "catastrophically drops by 25% to 40%.",
-        bold_prefix="Vulnerability to Spurious Lexical Shortcuts: "
+        "Frequency-Domain Spectral Artifact Extraction: To mathematically formulate and implement an orthogonal 2D Discrete Cosine "
+        "Transform (DCT-II) module with logarithmic scaling and 1D Radial Azimuthal Spectrum pooling A(r) to extract rotationally invariant "
+        "fingerprints of GAN upsampling operations."
     )
     add_bullet_p(
         doc,
-        "Commercial media bias aggregators (e.g., AllSides, Ad Fontes Media) rate political "
-        "bias strictly at the aggregate publisher domain level (e.g., labeling an entire publication as 'Left' or 'Right'). They "
-        "fail to evaluate the specific stance, tone, and entity targeting of individual articles, completely misclassifying articles "
-        "where a traditionally conservative outlet publishes an editorial criticizing a conservative candidate.",
-        bold_prefix="The Stance-Inversion Blind Spot: "
+        "Dual-Branch Neural Network Architecture: To engineer a decoupled deep neural architecture comprising (a) an EfficientNet-B4 "
+        "spatial backbone extracting a 1792-dimensional semantic visual embedding, and (b) a 4-stage custom Spectral-CNN extracting a "
+        "512-dimensional frequency embedding."
     )
     add_bullet_p(
         doc,
-        "Existing NLP architectures treat deception detection either as pure stylometric analysis or as pure "
-        "semantic text classification. None synthesize high-dimensional stylometrics, psycholinguistic author bias formulas, "
-        "deterministic cognitive fallacy scanning, and real-time institutional knowledge grounding into a unified, calibrated machine "
-        "learning framework.",
-        bold_prefix="Absence of Multidisciplinary Epistemic Verification: "
+        "Attention-Gated Bilinear Feature Fusion: To develop a learnable gating mechanism that dynamically evaluates the compression "
+        "context of the input frame, assigning adaptive weights to the spatial and frequency streams prior to classification."
+    )
+    add_bullet_p(
+        doc,
+        "Forensic Interpretability via Grad-CAM: To incorporate Gradient-weighted Class Activation Mapping across both spatial and spectral "
+        "layers, generating dual-domain heatmaps that highlight the exact facial anatomy and frequency bands responsible for the verdict."
+    )
+    add_bullet_p(
+        doc,
+        "Interactive Forensic Dashboard & Automated Reporting: To design and deploy a full-featured Streamlit web application providing "
+        "drag-and-drop video upload, real-time probability meters, frame-by-frame temporal trajectory analysis, and downloadable PDF forensic "
+        "certificates."
     )
 
-    add_heading_2(doc, "1.4 Measurable Project Objectives")
+    add_heading_2(doc, "1.4 Scope of the Project")
     add_body_p(
         doc,
-        "To resolve these foundational limitations, the 'Evidence and Framing Auditor' project formulates and accomplishes the "
-        "following six core engineering and scientific objectives:"
+        "The scope of DeepGuard AI covers the complete digital forensic verification lifecycle for facial manipulation in video sequences. "
+        "Specifically, the project addresses four major manipulation paradigms defined in the benchmark FaceForensics++ repository: "
+        "(1) Deepfakes (autoencoder-based identity replacement), (2) Face2Face (computer-graphics-based facial expression reenactment), "
+        "(3) FaceSwap (graphics-based face replacement with boundary blending), and (4) NeuralTextures (neural rendering-based mouth and "
+        "facial reenactment). The system evaluates both uncompressed raw media and compressed video tiers (c23 light compression and c40 "
+        "heavy compression) to ensure practical applicability to social media video transmission."
+    )
+    add_body_p(
+        doc,
+        "The system processes digital video formats including MP4, AVI, MOV, and MKV. Analysis is conducted at the frame level and "
+        "aggregated across the temporal dimension to produce calibrated video-level authenticity verdicts. The project strictly focuses "
+        "on visual and spectral forensics within facial regions; audio-stream spoofing detection, physiological biosignal tracking "
+        "(e.g., remote photoplethysmography), and text metadata provenance analysis remain outside the primary boundary of this work, "
+        "allowing dedicated computational optimization of the dual-stream computer vision pipeline."
     )
 
-    obj_data = [
-        ["Objective 1", "Multi-Branch Linguistic & Stylometric Engineering", "Extract and normalize 18+ mathematical stylometric metrics (Type-Token Ratio, Simpson's Diversity, Flesch Reading Ease, Flesch-Kincaid Grade Level, Gunning Fog Index, Punctuation Entropy) capturing structural signatures of deceptive prose."],
-        ["Objective 2", "Psycholinguistic Author Tone & Bias Quantification", "Derive and implement closed-form mathematical equations for Subjectivity Index (S_idx), Emotional Hyperbole Factor (EHF), Hedging Uncertainty Ratio (HUR), Affective Polarization Density (APD), and Composite Author Bias Score (ABS)."],
-        ["Objective 3", "Target-Stance Ideological Coordinate Formulation", "Develop a directional stance algorithm that resolves political stance inversion by cross-referencing entity mentions against attack modifiers, mapping each article to continuous 2D coordinates (Bias_x, Fact_y) on an AllSides-calibrated spectrum."],
-        ["Objective 4", "Deterministic 8-Class Cognitive Fallacy Detection", "Design and benchmark a deterministic pattern-matching engine identifying 8 classes of rhetorical and logical fallacies (Ad Hominem, Appeal to Fear, Phantom Authority, False Dilemma, Cherry-Picking, etc.) with an aggregated Fallacy Severity Index (FSI)."],
-        ["Objective 5", "Line-Level Institutional Knowledge Grounding", "Construct a curated, authoritative institutional knowledge matrix cross-referencing claims against official datasets from the World Health Organization (WHO), CDC, NASA CNEOS, IPCC AR6, UNESCO, and Wikipedia OpenSearch API."],
-        ["Objective 6", "Calibrated Hybrid Stacking ML & Web Telemetry", "Train a hybrid stacking ensemble combining Logistic Regression, Random Forest, and XGBoost over a 5,028-dimensional fused feature space, achieving ≥98% accuracy and ≥0.99 ROC-AUC, deployed via a real-time web telemetry dashboard with live URL scraping."]
-    ]
-    add_table_custom(
+    add_heading_2(doc, "1.5 Stakeholder Needs and Operating Assumptions")
+    add_body_p(
         doc,
-        headers=["Milestone", "Research & Engineering Objective", "Measurable Deliverables & Targets"],
-        rows_data=obj_data,
-        caption_text="Summary of Measurable Engineering Objectives and Quantitative Milestones.",
-        table_num="Table 1.1",
-        col_widths=[1.1, 2.0, 2.67]
+        "DeepGuard AI addresses the operational requirements of three primary stakeholder groups:"
+    )
+    add_bullet_p(
+        doc,
+        "Digital Forensic Examiners and Law Enforcement: Investigators require mathematically verifiable forensic tools capable of "
+        "ingesting suspect video evidence, generating tamper heatmaps that isolate manipulated facial landmarks, and producing audit-ready "
+        "evidentiary reports admissible in judicial proceedings."
+    )
+    add_bullet_p(
+        doc,
+        "Financial Technology (Fintech) and KYC Compliance Officers: Automated identity verification pipelines in banking and cryptocurrency "
+        "exchanges require ultra-low latency (< 50ms/frame) inference to defend biometric onboarding against video replay and digital identity "
+        "spoofing attacks."
+    )
+    add_bullet_p(
+        doc,
+        "Social Media Platforms and Media Fact-Checkers: Content moderation teams require scalable, compression-resilient detection "
+        "engines that maintain high accuracy even after media has undergone multiple re-encoding passes on platforms such as WhatsApp or YouTube."
+    )
+    add_body_p(
+        doc,
+        "Operating assumptions include: (a) input video streams contain recognizable human facial sequences suitable for tracking by MTCNN; "
+        "(b) video resolution is at least 360p (480x360 pixels) to permit canonical 256x256 face crop extraction; and (c) the host system "
+        "provides standard Python execution capabilities with optional CUDA hardware acceleration for high-throughput batch evaluation."
     )
 
-    add_heading_2(doc, "1.5 Scope and Operational Boundaries")
+    add_heading_2(doc, "1.6 Organisation of the Report")
     add_body_p(
         doc,
-        "The operational scope of the Evidence and Framing Auditor encompasses both automated batch processing of standardized news "
-        "corpora and real-time interactive verification of live digital content. Specifically, the framework supports:"
-    )
-    add_bullet_p(
-        doc,
-        "Processing of full-length English news articles, digital blog posts, press releases, and editorial columns.",
-        bold_prefix="Input Modalities: "
-    )
-    add_bullet_p(
-        doc,
-        "Real-time DOM tree parsing, CSS selector stripping, and main body text sanitization from live HTTP/HTTPS URLs.",
-        bold_prefix="Live Web Ingestion: "
-    )
-    add_bullet_p(
-        doc,
-        "Dynamic polling and verification of live news streams (e.g., BBC World News RSS feed) with instant veracity telemetry.",
-        bold_prefix="Automated RSS Feed Monitoring: "
-    )
-    add_bullet_p(
-        doc,
-        "Complete mathematical audit reporting every extracted metric, 2D ideological coordinates, sentence-level fallacy triggers, and institutional contradiction alerts.",
-        bold_prefix="Diagnostic Telemetry: "
-    )
-    add_body_p(
-        doc,
-        "The project boundaries explicitly delimit the current version to English-language digital texts; multi-lingual transfer and "
-        "cross-modal image verification (e.g., deepfake image-text consistency) are designated as future extensions."
+        "The remainder of this report is organized into six technical chapters and supporting documentation: "
+        "Chapter 2 reviews the theoretical foundations of deepfake generation, existing spatial and frequency detection architectures, "
+        "and identifies the key research gaps motivating our dual-stream approach. "
+        "Chapter 3 presents the requirement specifications, feasibility analysis, system architecture, data flow diagrams (Level 0 and Level 1), "
+        "use-case models, and data governance frameworks. "
+        "Chapter 4 provides a granular description of the implementation, including mathematical formulations of the 2D-DCT-II and Radial "
+        "Azimuthal Spectrum A(r), the EfficientNet-B4 spatial backbone, attention-gated bilinear fusion, code snippets, and UI screenshots. "
+        "Chapter 5 details the verification strategy, test case execution (TC1 to TC18), automated test suite results, and forensic validity. "
+        "Chapter 6 presents empirical results, benchmark comparisons on FaceForensics++ and Celeb-DF v2, ROC curves, confusion matrices, and "
+        "operational discussion. "
+        "Chapter 7 concludes the report with operational rollout guidelines and future research directions. "
+        "References and Appendices containing source code extracts and deployment metadata conclude the document."
     )
 
-    add_heading_2(doc, "1.6 Organization of the Report")
-    add_body_p(
-        doc,
-        "This project report is structured into seven comprehensive chapters following the official AKTU guidelines:"
-    )
-    add_bullet_p(doc, "Articulates the background, problem statement, objectives, scope, and technical terminology.", bold_prefix="Chapter 1 (Introduction): ")
-    add_bullet_p(doc, "Provides a critical, chronological review of existing deception detection literature (2015–2026), comparative matrices, and identified research gaps.", bold_prefix="Chapter 2 (Literature Review): ")
-    add_bullet_p(doc, "Presents the high-level system architecture, closed-form mathematical equations, feasibility studies, requirements, and UML/DFD models.", bold_prefix="Chapter 3 (System Analysis and Design): ")
-    add_bullet_p(doc, "Details the modular Python implementation, software stack, core algorithms, and optimization strategies.", bold_prefix="Chapter 4 (Implementation): ")
-    add_bullet_p(doc, "Presents the testing methodology, unit test suites, formal test cases matrix, adversarial testing, and security auditing.", bold_prefix="Chapter 5 (Testing): ")
-    add_bullet_p(doc, "Analyzes empirical performance on the benchmark corpus, comparative model evaluations, ablation studies, confusion matrices, and qualitative case studies.", bold_prefix="Chapter 6 (Results and Discussion): ")
-    add_bullet_p(doc, "Summarizes project deliverables, acknowledges technical constraints, and outlines a concrete four-phase future roadmap.", bold_prefix="Chapter 7 (Conclusion and Future Scope): ")
-    add_bullet_p(doc, "Followed by standard IEEE References and comprehensive Technical Appendices.", bold_prefix="Back Matter: ")
+    doc.add_page_break()
